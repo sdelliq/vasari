@@ -56,3 +56,52 @@ divide_column_by_character <- function(dataframe, column_name, separator) {
 }
 # Running example:
 # NDG_N <- divide_column_by_character(NDG_N, "Judicial.Procedures.CODE", "\\+ ")
+
+###-----------------------------------------------------------------------###
+#-----                Entity Table Functions                        -----         
+###-----------------------------------------------------------------------###
+clean_cf.piva <- function(column) {
+  column <- gsub(" ", "", column)
+  column <- ifelse(str_length(column) == 10, paste0(0, column), column)
+  return(column)
+}
+# Running example:
+#ENTITIES$cf.piva <- clean_cf.piva(ENTITIES$cf.piva)
+
+# Define the age categories based on the age column
+add_age_range_column <- function(data) {
+  breaks <- c(0, 25, 50, 65, 75, Inf)
+  labels <- c("0-25", "25-50", "50-65", "65-75", "75+")
+  result <- data %>%
+    mutate(
+      range.age = cut(age, breaks = breaks, labels = labels, right = FALSE)
+    )
+  return(result)
+}
+# Running example:
+#ENTITIES <- add_age_range_column(ENTITIES)
+
+add_sex_column <- function(data) {
+  result <- data %>%
+    mutate(sex = case_when(
+      !is.na(type.subject) & type.subject == "individual" & as.numeric(str_sub(cf.piva, start = 10L, end = 11L)) > 40 ~ "f",
+      !is.na(type.subject) & type.subject == "individual" & as.numeric(str_sub(cf.piva, start = 10L, end = 11L)) <= 40 ~ "m",
+      TRUE ~ NA_character_
+    ))
+  return(result)
+}
+# Running example:
+# ENTITIES <-   add_sex_column (ENTITIES)
+
+add_type.pg_column <- function(data) {
+  result <- data %>%
+    mutate(type.pg = case_when(
+      str_detect(name, "srl|s.r.l|s.r.l.|srls")  ~ "srl",
+      str_detect(name, "d.i|d.i.")  ~ "di",
+      str_detect(name, " ss |s.s|s.s.|societa' semplice")  ~ "ss",
+      str_detect(name, " sas |s.a.s|s.a.s.")  ~ "sas",
+      str_detect(name, "snc|s.n.c|s.n.c.|sncs")  ~ "snc",
+      str_detect(name, " sc |s.c|s.c.|scs")  ~ "sc",
+      TRUE ~ NA_character_
+    ))
+} 
