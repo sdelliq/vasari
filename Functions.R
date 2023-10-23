@@ -13,22 +13,18 @@ read_doc_and_save_df <- function(file_path) {
   return(DT)
 }
 
+read_specific_sheets_and_save_df <- function(file_path, sheet_names) {
+  tibble_list <- lapply(sheet_names, function(x) read_excel(file_path, sheet = x))
+  dfs <- lapply(tibble_list, as.data.frame)
+  # Set names for the data frames based on the sheet names
+  names(dfs) <- sheet_names
+  return(dfs)
+}
+
 ###-----------------------------------------------------------------------###
 
 #-----            Cleaning  Functions                                   -----         
 ###-----------------------------------------------------------------------###
-
-#Delete first x columns and make the next one the colname
-deleteXrowsAndRenameColumns <- function(x, df){
-  colnames(df) <- df[x, ] 
-  df <- df[-1:-x,]
-  rownames(df) <- 1:nrow(df)
-  df <- df[-1,]
-  rownames(df) <- 1:nrow(df)
-  return(df)
-}
-#Example:
-#original.BorrowerData <- deleteXrowsAndRenameColumns(4, original.BorrowerData)
 
 clean_column_names <- function(names) {
   # Use a regular expression to find positions between consecutive uppercase and lowercase letters to solve for example BorrowerName
