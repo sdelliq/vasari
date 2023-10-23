@@ -46,4 +46,4 @@ anagrafiche <- anagrafiche %>%
       )
     )
   )
-
+anagrafiche <- anagrafiche %>% mutate(data.di.nascita = as.Date.character(data.di.nascita))
