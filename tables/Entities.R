@@ -1,5 +1,6 @@
 
 entities <- anagrafiche %>% select(name, cf.piva, type.subject=forma.giuridica, city=comune, province=provincia, data.di.nascita)
+entities <- divide_column_by_character(entities, name, ",")
 #id
 entities$id.entity <- paste0("e", seq_len(nrow(entities))) 
 
@@ -10,7 +11,9 @@ entities <- entities %>% mutate(dummy.info=NA,
                                 status.pg=NA,
                                 flag.imputed=NA)
 
-entities <- entities %>% mutate(age = as.numeric(format(Sys.Date(), "%Y")) - as.numeric(format(data.di.nascita, "%Y")))
+entities <- entities %>% 
+  mutate(data.di.nascita = as.Date(data.di.nascita, format = "%Y-%m-%d")) %>%
+  mutate(age = as.numeric(format(Sys.Date(), "%Y")) - as.numeric(format(data.di.nascita, "%Y")))
 entities <- add_age_range_column(entities)
 
 #Adds 0 in start when needed 
