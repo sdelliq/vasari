@@ -17,7 +17,7 @@ Link_Borrower_Guarantors <- original.garanzie %>% select(id.bor = ndg, id.guaran
 
 
 #We're adding the new entity 
-ent_da_aggiungere <- data.frame(id.entity  = 'e245',
+ent_da_aggiungere <- data.frame(id.entity  = paste0('e', nrow(entities)+1),
                                 name = "italia com-fidi societa' consortile a responsabilita'", 
                                 type.subject = 'corporate',type.pg = 'sc')
 entities <- entities %>% add_row(ent_da_aggiungere)
