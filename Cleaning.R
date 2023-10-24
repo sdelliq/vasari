@@ -3,10 +3,12 @@ original.borrowers.corporate <- original.borrowers.corporate %>% mutate_all(tolo
 original.borrowers.individual <- original.borrowers.individual %>% mutate_all(tolower)
 original.posizioni <- original.posizioni %>% mutate_all(tolower)
 original.anagrafiche <- original.anagrafiche %>% mutate_all(tolower)
+original.garanzie <- original.garanzie %>% mutate_all(tolower)
 
 #Cleaning the column names
 colnames(original.posizioni) <- clean_column_names(colnames(original.posizioni))
 colnames(original.anagrafiche) <- clean_column_names(colnames(original.anagrafiche))
+colnames(original.garanzie) <- clean_column_names(colnames(original.garanzie))
 
 #Trim
 original.borrowers.corporate <- original.borrowers.corporate %>% mutate_all(str_trim)
@@ -47,3 +49,9 @@ anagrafiche <- anagrafiche %>%
     )
   )
 anagrafiche <- anagrafiche %>% mutate(data.di.nascita = as.Date.character(data.di.nascita))
+
+
+# Cleaning of garanzie
+original.garanzie <- original.garanzie %>% select(-`#Immobili`)
+original.garanzie$intestazione.garante <- gsub("\\s+", " ", original.garanzie$intestazione.garante)
+original.garanzie$intestazione.garante <- gsub("[,.*]+$", "", original.garanzie$intestazione.garante)
