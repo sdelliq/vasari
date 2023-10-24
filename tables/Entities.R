@@ -1,7 +1,7 @@
 
 entities <- anagrafiche %>% select(name, cf.piva, type.subject=forma.giuridica, city=comune, province=provincia, data.di.nascita)
 #id
-entities$id.entity <- paste0("e", seq_len(nrow(counterparties))) 
+entities$id.entity <- paste0("e", seq_len(nrow(entities))) 
 
 entities <- entities %>% mutate(dummy.info=NA,
                                 solvency.pf=NA,

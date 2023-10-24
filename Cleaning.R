@@ -52,6 +52,6 @@ anagrafiche <- anagrafiche %>% mutate(data.di.nascita = as.Date.character(data.d
 
 
 # Cleaning of garanzie
-original.garanzie <- original.garanzie %>% select(-`#Immobili`)
+original.garanzie <- original.garanzie %>% select(-`x.immobili`)
 original.garanzie$intestazione.garante <- gsub("\\s+", " ", original.garanzie$intestazione.garante)
 original.garanzie$intestazione.garante <- gsub("[,.*]+$", "", original.garanzie$intestazione.garante)
