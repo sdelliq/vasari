@@ -6,6 +6,8 @@ original.anagrafiche <- original.anagrafiche %>% mutate_all(tolower)
 original.garanzie <- original.garanzie %>% mutate_all(tolower)
 
 #Cleaning the column names
+colnames(original.borrowers.corporate) <- clean_column_names(colnames(original.borrowers.corporate))
+colnames(original.borrowers.individual) <- clean_column_names(colnames(original.borrowers.individual))
 colnames(original.posizioni) <- clean_column_names(colnames(original.posizioni))
 colnames(original.anagrafiche) <- clean_column_names(colnames(original.anagrafiche))
 colnames(original.garanzie) <- clean_column_names(colnames(original.garanzie))
