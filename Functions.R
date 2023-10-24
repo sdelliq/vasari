@@ -106,7 +106,26 @@ add_type.pg_column <- function(data) {
     ))
 } 
 
-
+add_type_subject_column <- function(data) {
+  result <- data %>%
+    mutate(
+      type.subject = ifelse(
+        is.na(cf.piva), 
+        type.subject,  # Keep old value
+        ifelse(
+          grepl("^[0-9]+$", cf.piva),
+          "corporate",
+          "individual"
+          
+          
+        )
+      )
+    )
+  
+  return(result)
+}
+# Running example:
+# ENTITIES <- add_type_subject_column(ENTITIES)
 
 
 

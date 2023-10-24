@@ -1,10 +1,11 @@
 
-entities <- anagrafiche %>% select(name, cf.piva, type.subject=forma.giuridica, city=comune, province=provincia, data.di.nascita)
+entities <- anagrafiche %>% select(id.bor, name, cf.piva, type.subject=forma.giuridica, city=comune, province=provincia, data.di.nascita)
 entities <- divide_column_by_character(entities, name, ",")
 entities <- entities %>% distinct()
 
 entities <- entities %>% group_by(name) %>% 
   summarise(
+    id.bor = paste(id.bor, collapse = ","),
     cf.piva = ifelse(all(is.na(cf.piva)), NA, cf.piva[!is.na(cf.piva)]),
     type.subject = first(type.subject),
     city = first(city),
@@ -38,6 +39,7 @@ entities <- entities %>% mutate(
     "corporate"
   )
 )
+entities <- add_type_subject_column(entities)
 
 entities <- add_sex_column(entities)
 
@@ -57,4 +59,4 @@ entities <- left_join(entities, GEO.metadata %>% select(city, province, region, 
 entities <- entities %>% distinct()
 
 
-entities <- entities %>% select(id.entity, name, cf.piva, type.subject, dummy.info, sex, range.age, age, solvency.pf, income.pf, type.pg, status.pg, date.cessation, city, province, region, area, flag.imputed)
+entities <- entities %>% select(id.bor, id.entity, name, cf.piva, type.subject, dummy.info, sex, range.age, age, solvency.pf, income.pf, type.pg, status.pg, date.cessation, city, province, region, area, flag.imputed)
