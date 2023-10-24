@@ -10,7 +10,8 @@ Loans <- original.posizioni %>% select(numero.rapporto,ndg, intestazione,forma.t
                                        type = forma.tecnica.rapporto,
                                        id.loan = numero.rapporto,
                                        name = intestazione,
-                                       date.status = data.di.passaggio.a.sofferenza)  %>%
+                                       date.status = data.di.passaggio.a.sofferenza,
+                                       id.bor = ndg)  %>%
                                 mutate(gbv.residual = gbv.original,
                                        penalties = NA_real_)
 
