@@ -11,5 +11,6 @@ original.anagrafiche <- data_frames$Anagrafiche
 original.garanzie <- data_frames$Garanzie
 
 source("Cleaning.R")
+source("tables/Loans.R")
 source("tables/Counterparties.R")
 source("tables/Entities.R")
