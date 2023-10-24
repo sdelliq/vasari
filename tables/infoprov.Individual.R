@@ -43,3 +43,5 @@ infoprov.PF <- infoprov.PF %>%
     str_detect(solvency.base,'dipendente') ~ 'Employee-N/A',
     str_detect(solvency.base,'disoccupato') ~ 'Insolvent'
   ))
+infoprov.PF <- infoprov.PF %>% select(cf.piva,date.infoprov,name,solvency.base,solvency.adj,income.gross,
+                                      income.net,city,province,region)
