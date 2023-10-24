@@ -7,7 +7,8 @@ entities <- entities %>% group_by(name) %>%
   summarise(
     id.bor = paste(id.bor, collapse = ","),
     cf.piva = ifelse(all(is.na(cf.piva)), NA, cf.piva[!is.na(cf.piva)]),
-    type.subject = first(type.subject),
+    type.subject = ifelse("prv" %in% type.subject | "ind" %in% type.subject, "individual", "corporate"),
+    #ifelse("pensionato" %in% solvency.base, "pensionato", first(solvency.base))
     city = first(city),
     province = first(province),
     data.di.nascita = first(data.di.nascita)
@@ -32,13 +33,6 @@ entities <- add_age_range_column(entities)
 entities$cf.piva <- clean_cf.piva(entities$cf.piva)
 
 #Change type.subject column
-entities <- entities %>% mutate(
-  type.subject = ifelse(
-    type.subject == "ind" | type.subject == "prv",
-    "individual",
-    "corporate"
-  )
-)
 entities <- add_type_subject_column(entities)
 
 entities <- add_sex_column(entities)
