@@ -47,15 +47,6 @@ Loans <- Loans %>% select(-check_gbv)
 
 
 
-#---------------------------------#
-#----     Loans by type     ------
-#---------------------------------#
-total.loans <- n_distinct(Loans$id.loan)
-total.gbv <- sum(Loans$gbv.original)
-loans_by_type <- Loans %>% group_by(type) %>% 
-                           summarise(n.loans = n(), 
-                                     `%.loans` = n.loans/total.loans,
-                                     sum.gbv = sum(gbv.original),
-                                     `%.gbv` = sum.gbv/total.gbv)
+
 
 

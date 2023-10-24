@@ -54,3 +54,5 @@ entities <- entities %>% distinct()
 
 
 entities <- entities %>% select(id.bor, id.entity, name, cf.piva, type.subject, dummy.info, sex, range.age, age, solvency.pf, income.pf, type.pg, status.pg, date.cessation, city, province, region, area, flag.imputed)
+
+entities$name <- gsub(' time house','',entities$name)
