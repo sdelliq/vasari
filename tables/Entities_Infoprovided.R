@@ -22,3 +22,4 @@ senza_cf.piva <- senza_cf.piva %>% mutate(solvency.pf=solvency.base,
   select(-income.net, -solvency.base)
 
 updated.entities <- rbind(pf, pg, senza_cf.piva)
+updated.entities <- add_type_subject_column(updated.entities)
