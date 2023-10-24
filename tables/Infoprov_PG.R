@@ -1,3 +1,2 @@
 Infoprov_PG <- original.borrowers.corporate %>% select(cf.piva=cf_piva, name=out_dati_anagrafici_denominazione, type=out_dati_attivita_natura_giuridica, status=out_dati_attivita_stato_attivita, date.cessation=out_dati_attivita_data_cessazione_attivita, city=out_dati_anagrafici_indirizzo_comune, province=out_dati_anagrafici_indirizzo_provincia, region=out_dati_anagrafici_indirizzo_regione)
 Infoprov_PG <- Infoprov_PG %>% mutate (date.infoprov = NA)
-colnames(original.borrowers.corporate)
