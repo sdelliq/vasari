@@ -1,6 +1,17 @@
 
 entities <- anagrafiche %>% select(name, cf.piva, type.subject=forma.giuridica, city=comune, province=provincia, data.di.nascita)
 entities <- divide_column_by_character(entities, name, ",")
+entities <- entities %>% distinct()
+
+entities <- entities %>% group_by(name) %>% 
+  summarise(
+    cf.piva = ifelse(all(is.na(cf.piva)), NA, cf.piva[!is.na(cf.piva)]),
+    type.subject = first(type.subject),
+    city = first(city),
+    province = first(province),
+    data.di.nascita = first(data.di.nascita)
+    )
+
 #id
 entities$id.entity <- paste0("e", seq_len(nrow(entities))) 
 
