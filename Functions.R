@@ -105,3 +105,47 @@ add_type.pg_column <- function(data) {
       TRUE ~ NA_character_
     ))
 } 
+
+
+
+
+
+fct.emp <- function(x) { 
+  y <- x * 12 * (1 - 0.09)  
+  x.1 <- 15*10^3 
+  x.2 <- 28*10^3 
+  x.3 <- 50*10^3 
+  p.1 <- 0.23 
+  p.2 <- 0.25 
+  p.3 <- 0.35 
+  p.4 <- 0.43 
+  t.1 <- pmin(y, x.1) %>% pmax(0) * p.1 
+  t.2 <- pmin(y - x.1, x.2 - x.1) %>% pmax(0) * p.2 
+  t.3 <- pmin(y - x.2, x.3 - x.2) %>% pmax(0) * p.3 
+  t.4 <- pmin(y - x.3) %>% pmax(0) * p.4 
+  z <- (y - (t.1+t.2+t.3+t.4))/12 
+  return(z) 
+} 
+
+
+
+
+fct.pens <- function(x) { 
+  y <- x * 12  
+  x.1 <- 15*10^3 
+  x.2 <- 28*10^3 
+  x.3 <- 50*10^3 
+  p.1 <- 0.23 
+  p.2 <- 0.25 
+  p.3 <- 0.35 
+  p.4 <- 0.43 
+  t.1 <- pmin(y, x.1) %>% pmax(0) * p.1 
+  t.2 <- pmin(y - x.1, x.2 - x.1) %>% pmax(0) * p.2 
+  t.3 <- pmin(y - x.2, x.3 - x.2) %>% pmax(0) * p.3 
+  t.4 <- pmin(y - x.3) %>% pmax(0) * p.4 
+  z <- (y - (t.1+t.2+t.3+t.4))/12 
+  return(z) 
+} 
+
+
+
