@@ -13,16 +13,24 @@ Loans <- original.posizioni %>% select(numero.rapporto,ndg, intestazione,forma.t
                                        date.status = data.di.passaggio.a.sofferenza,
                                        id.bor = ndg)  %>%
                                 mutate(gbv.residual = gbv.original,
-                                       penalties = NA_real_)
+                                       penalties = NA_real_,
+                                       id.group = NA,
+                                       originator = NA,
+                                       ptf = NA,
+                                       cluster.ptf =NA,
+                                       status =ifelse(is.na(date.status),'utp','bad'),
+                                       date.origination = NA,
+                                       flag.imputed =NA,
+                                       date.last.act = NA)
 
+Loans <- Loans %>% select(id.loan,id.bor,id.group,originator,ptf,cluster.ptf,type,status,gbv.original,
+                          gbv.residual,principal,interest,penalties,expenses,date.origination,date.status,
+                          date.last.act,flag.imputed)
 Loans$date.status <- as.Date(Loans$date.status)
 Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,penalties,expenses), ~as.numeric(.))
 Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,penalties,expenses), ~replace_na(.,0))
 Loans$type <- factor(Loans$type)
-
-
-Loans$name <- gsub("\\s+", " ", Loans$name)
-Loans$name <- gsub(" e ", ", ", Loans$name)
+Loans$status <- factor(Loans$status,levels = c('utp','bad'))
 
 #---------------------------------#
 #----     check gbv sum    ------
