@@ -4,7 +4,8 @@ infoprov.PF <- original.borrowers.individual  %>% select(cf.piva = cf_piva,
                                                          solvency.base = stato.occupazione,
                                                          income.gross = emolumenti.mensili.lordi,
                                                          city = comune ,
-                                                         note = note.17) 
+                                                         note = note.17,
+                                                         p.iva_flag) 
 infoprov.PF <- infoprov.PF %>% mutate(date.infoprov = NA,
                                       solvency.adj = NA,
                                       income.net = NA)
@@ -27,7 +28,8 @@ infoprov.PF <- infoprov.PF %>% group_by(cf.piva) %>%
                                          date.infoprov = first(date.infoprov),
                                          solvency.adj = first(solvency.adj),
                                          province = first(province),
-                                         region = first(region)
+                                         region = first(region),
+                                         p.iva_flag = ifelse("s" %in% p.iva_flag, "si",p.iva_flag)
                                          )
 
 
@@ -44,8 +46,11 @@ infoprov.PF <- infoprov.PF %>%
     str_detect(solvency.base,'disoccupato') ~ 'Insolvent'
   ))
 
+
 infoprov.PF <- infoprov.PF %>% mutate(solvency.adj = ifelse(solvency.base=='Pensioner' & income.net > 1200,'Pensioner',
                                                             ifelse(str_detect(solvency.base,'Employee') & income.net > 500,solvency.base,'Insolvent')))
+infoprov.PF <- infoprov.PF %>% mutate(solvency.adj = case_when(solvency.adj == 'Insolvent' & p.iva_flag=='si'~'Self-Employed',
+                                                               TRUE ~ solvency.adj))
 
 infoprov.PF <- infoprov.PF %>% select(cf.piva,date.infoprov,name,solvency.base,solvency.adj,income.gross,
                                       income.net,city,province,region)
