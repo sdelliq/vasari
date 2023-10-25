@@ -150,6 +150,19 @@ add_age_column <- function(data) {
   return(result)
 }
 
+add_type.pg_column <- function(data) {
+  result <- data %>%
+    mutate(type.pg = case_when(
+      str_detect(type.pg, "societa' a responsabilita' limitata")  ~ "srl",
+      str_detect(type.pg, "societa' per azioni")  ~ "spa",
+      str_detect(type.pg, "societa' in nome collettivo")  ~ "snc",
+      str_detect(type.pg, "societa' in accomandita semplice")  ~ "sas",
+      str_detect(type.pg, "cooperativa|consortile|fidi")  ~ "sc",
+      str_detect(type.pg, "associazione | non precisata")  ~ "other",
+      TRUE ~ NA_character_
+    ))
+} 
+
 ###-----------------------------------------------------------------------###
 #-----                Info providing Functions                        -----         
 ###-----------------------------------------------------------------------###
