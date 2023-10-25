@@ -32,9 +32,6 @@ entities <- add_age_range_column(entities)
 #Adds 0 in start when needed 
 entities$cf.piva <- clean_cf.piva(entities$cf.piva)
 
-#Change type.subject column
-entities <- add_type_subject_column(entities)
-
 entities <- add_sex_column(entities)
 
 entities <- add_type.pg_column(entities)
