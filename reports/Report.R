@@ -42,8 +42,8 @@ addStyle(wb, sheet = "Report", style = thousands_rows, rows = 5, cols = c(4:5) ,
 writeData(wb, sheet = "Report", x = "Loan by type", startCol = 1, startRow = 9)
 writeDataTable(wb, 1, x = loans.by.type , startRow = 10,
                startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(11:14), cols = 5 ,stack = TRUE,gridExpand = TRUE)
-addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(11:14), cols = c(4,6) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(11:14), cols = 4 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(11:14), cols = c(3,5) ,stack = TRUE,gridExpand = TRUE)
 
 writeData(wb, sheet = "Report", x = "Loan by gbv range", startCol = 1, startRow = 19)
 writeDataTable(wb, 1, x = loans.by.gbv.range , startRow = 20,

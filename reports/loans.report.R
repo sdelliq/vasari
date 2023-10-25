@@ -8,7 +8,7 @@ average.loan <- total.gbv/total.loans
 average.borr <- total.gbv/total.ndg
 totals <- data.frame(N.Loans = total.loans,
                      Sum.GBV = total.gbv,
-                     N.Borrowers = total.ndg,
+                     ndg = total.ndg,
                      Average.Loan.Size = average.loan,
                      Average.GBV.Borrower = average.borr)
 
@@ -17,14 +17,14 @@ totals <- data.frame(N.Loans = total.loans,
 #---------------------------------#
 
 loans.by.type <- Loans %>% group_by(type) %>% 
-  summarise(ndg = n_distinct(id.bor),
+  summarise(
             n.loans = n(), 
             `%.loans` = n.loans/total.loans,
             sum.gbv = sum(gbv.original),
             `%.gbv` = sum.gbv/total.gbv)
 total.row <- loans.by.type %>% 
     summarise( type = 'Totals', 
-               across(c(ndg,n.loans,`%.loans`,sum.gbv,`%.gbv`),sum))
+               across(c(n.loans,`%.loans`,sum.gbv,`%.gbv`),sum))
 loans.by.type <- rbind(total.row,loans.by.type)
 #---------------------------------#
 #----  Loans by range.gbv  ------
@@ -56,15 +56,21 @@ total.row <- loans.by.gbv.range %>%
 loans.by.gbv.range <- rbind(total.row,loans.by.gbv.range)
 
 #----------------------------------------#
+#----       entities -loans      ------
+#----------------------------------------#
+entities.loans <- updated.entities  %>% 
+  left_join(link.counterparties.entities, by= 'id.entity',relationship = "many-to-many") %>% 
+  left_join(counterparties,by = 'id.counterparty') %>%
+  filter(role=='borrower' ) %>%
+  left_join(Loans,by = 'id.bor',relationship = "many-to-many")
+
+#----------------------------------------#
 #----  entities by type.subject  ------
 #----------------------------------------#
 
-ent.by.type <- updated.entities %>% select(id.entity,type.subject) %>% 
-             left_join(link.counterparties.entities, by= 'id.entity') %>% 
-             left_join(counterparties,by = 'id.counterparty') %>%
-             filter(role=='borrower' ) %>%
-             left_join(Loans,by = 'id.bor') %>% 
-             select(type.subject,id.bor,gbv.original) %>% distinct()
+ent.by.type <- entities.loans %>% 
+             select(type.subject,id.bor,gbv.original) %>% distinct() %>%
+  group_by(id.bor) %>% summarise(type.subject= first(type.subject),gbv.original = sum(gbv.original))
 
 
 ent.by.type <- ent.by.type %>% group_by(type.subject) %>% 
@@ -85,12 +91,10 @@ ent.by.type <- rbind(total.row,ent.by.type)
 #----  entities by area  ------
 #----------------------------------------#
 
-ent.by.area <- updated.entities %>% select(id.entity,area) %>% 
-  left_join(link.counterparties.entities, by= 'id.entity') %>% 
-  left_join(counterparties,by = 'id.counterparty') %>%
-  filter(role=='borrower' ) %>%
-  left_join(Loans,by = 'id.bor') %>% 
-  select(area,id.bor,gbv.original) %>% distinct()
+ent.by.area <- entities.loans %>% 
+  select(area,id.bor,gbv.original) %>% distinct() %>%
+  group_by(id.bor,gbv.original) %>% summarise(area= first(area)) %>% distinct() %>%
+  group_by(id.bor) %>% summarise(area= first(area),gbv.original = sum(gbv.original)) %>% distinct()
 
 
 ent.by.area <- ent.by.area %>% group_by(area) %>% 
@@ -113,12 +117,11 @@ ent.by.area <- rbind(total.row,ent.by.area)
 #----------------------------------------#
 #----  entities by province - Top 5  -----
 #----------------------------------------#
-ent.by.province <- updated.entities %>% select(id.entity,province) %>% 
-  left_join(link.counterparties.entities, by= 'id.entity') %>% 
-  left_join(counterparties,by = 'id.counterparty') %>%
-  filter(role=='borrower' ) %>%
-  left_join(Loans,by = 'id.bor',relationship = "many-to-many") %>% 
-  select(province,id.bor,gbv.original) %>% distinct()
+ent.by.province <- entities.loans %>% 
+  select(province,id.bor,gbv.original) %>%  distinct() %>%
+  group_by(id.bor,gbv.original) %>% summarise(province= first(province)) %>% distinct() %>%
+  group_by(id.bor) %>% summarise(province= first(province),gbv.original = sum(gbv.original)) %>% distinct()
+
 
 ent.by.province <- ent.by.province %>% filter(!is.na(province)) %>%
   group_by(province) %>% 
@@ -131,4 +134,35 @@ ent.by.province <- ent.by.province %>% filter(!is.na(province)) %>%
 
 Top_5_province_by_gbv <- ent.by.province[1:5, ]
 names(Top_5_province_by_gbv) <- c("province", "ndg","sum.gbv","%.ndg","%.gbv")
+
+
+#----------------------------------------#
+#----  entities by solvency  -----
+#----------------------------------------#
+
+
+
+ent.by.solvency <- entities.loans %>% 
+  select(solvency.pf,id.bor,gbv.original) %>% distinct() %>%
+  group_by(id.bor,gbv.original) %>% summarise(solvency.pf= first(solvency.pf)) %>% distinct() %>%
+  group_by(id.bor) %>% summarise(solvency.pf= first(solvency.pf),gbv.original = sum(gbv.original)) %>% distinct()
+
+
+ent.by.solvency <- ent.by.solvency %>%
+  group_by(solvency.pf) %>% 
+  summarise(ndg = n_distinct(id.bor),
+            sum.gbv = sum(gbv.original),
+            perc.ndg = sum(ndg)/total.ndg,
+            perc.gbv = sum(gbv.original)/total.gbv
+  ) %>% 
+  arrange(desc(sum.gbv))
+
+
+names(ent.by.solvency) <- c("solvency.pf", "ndg","sum.gbv","%.ndg","%.gbv")
+
+total.row <- ent.by.solvency %>% 
+  summarise( solvency.pf = 'Totals', 
+             across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
+ent.by.solvency <- rbind(total.row,ent.by.solvency)
+
 
