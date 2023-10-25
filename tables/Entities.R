@@ -13,7 +13,7 @@ entities <- entities %>% group_by(name) %>%
     province = first(province),
     data.di.nascita = first(data.di.nascita)
     )
-
+entities <- divide_column_by_character(entities, cf.piva, ",")
 #id
 entities$id.entity <- paste0("e", seq_len(nrow(entities))) 
 
