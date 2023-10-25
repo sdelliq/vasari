@@ -1,25 +1,29 @@
-pf <- entities %>% filter(type.subject=="individual")
-pg <- entities %>% filter(type.subject=="corporate" & !is.na(cf.piva)) %>% select(-date.cessation)
-senza_cf.piva <- entities %>% filter(is.na(cf.piva)) %>% select(-cf.piva)
+#We take the info we want from entities, from infoproviding, and we join them.
+pf <- entities %>% filter(type.subject=="individual") %>% select(id.entity, name, cf.piva, type.subject)
+pf <- pf %>% left_join(infoprov.PF %>% select(cf.piva, solvency.pf=solvency.base, income.pf=income.net, city, province,region), 
+                       by ="cf.piva")
+pf <- pf %>% mutate(dummy.info = 1) 
 
-pf <- pf %>% left_join(infoprov.PF %>% select(cf.piva, solvency.base, income.net), by ="cf.piva")
-pg <- pg %>% left_join(Infoprov_PG %>% select(cf.piva, type, status, date.cessation), by ="cf.piva")
-senza_cf.piva <- senza_cf.piva %>% left_join(infoprov.PF %>% select(name, cf.piva, solvency.base, income.net), by ="name")
+#We take the info we want from entities, from infoproviding, and we join them.
+pg <- entities %>% filter(type.subject=="corporate" & !is.na(cf.piva)) %>% select(id.entity, name, cf.piva, type.subject)
+pg <- pg %>% left_join(Infoprov_PG %>% select(cf.piva, type.pg=type, status.pg=status, date.cessation, city, province, region), 
+                       by ="cf.piva")
+pg <- pg %>% mutate(dummy.info = ifelse(!is.na(cf.piva), 1, 0)) 
 
-pf <- pf %>% mutate(solvency.pf=solvency.base,
-                    income.pf = income.net,
-                    dummy.info = 1) %>%
-  select(-income.net, -solvency.base)
+#We take the info we want from entities, from infoproviding, and we join them.
+senza_cf.piva <- entities %>% filter(is.na(cf.piva)) %>% select(id.entity, name, type.subject)
+senza_cf.piva <- senza_cf.piva %>% 
+  left_join(infoprov.PF %>% select(name, cf.piva, solvency.pf=solvency.base, income.pf =income.net, city, province,region), 
+            by ="name")
+senza_cf.piva <- senza_cf.piva %>% mutate(dummy.info = ifelse(is.na(cf.piva), 0, 1))  
 
-pg <- pg %>% mutate(type.pg=type,
-                    status.pg=status,
-                    dummy.info = ifelse(!is.na(cf.piva), 1, 0)) %>%
-  select(-type, -status)
-
-senza_cf.piva <- senza_cf.piva %>% mutate(solvency.pf=solvency.base,
-                    income.pf = income.net,
-                    dummy.info = ifelse(is.na(cf.piva), 0, 1))  %>%
-  select(-income.net, -solvency.base)
-
-updated.entities <- rbind(pf, pg, senza_cf.piva)
+#We recalculate some information in case some cf.piva were wrong, and to add it in the cases we didn't have the cf.piva before.
+updated.entities <- bind_rows(pf, pg, senza_cf.piva)
 updated.entities <- add_type_subject_column(updated.entities)
+updated.entities <- add_sex_column(updated.entities)
+updated.entities <- add_age_column(updated.entities)
+updated.entities <- add_age_range_column(updated.entities)
+updated.entities <- left_join(updated.entities, GEO.metadata %>% select(city, area), by = "city")
+updated.entities <- updated.entities %>% distinct()
+updated.entities <- updated.entities %>% mutate(flag.imputed = 0)
+updated.entities <- updated.entities %>% select(id.entity, name, cf.piva, type.subject, dummy.info, sex, range.age, age, solvency.pf, income.pf, type.pg, status.pg, date.cessation, city, province, region, area, flag.imputed)
