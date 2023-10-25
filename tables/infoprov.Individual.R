@@ -5,11 +5,15 @@ infoprov.PF <- original.borrowers.individual  %>% select(cf.piva = cf_piva,
                                                          income.gross = emolumenti.mensili.lordi,
                                                          city = comune ,
                                                          note = note.17,
-                                                         p.iva_flag) 
+                                                         p.iva_flag,
+                                                         p.iva) 
 infoprov.PF <- infoprov.PF %>% mutate(date.infoprov = NA,
                                       solvency.adj = NA,
                                       income.net = NA)
 infoprov.PF$name <- paste(infoprov.PF$cognome,infoprov.PF$nome,sep = ' ')
+
+infoprov.PF <- infoprov.PF %>% mutate(cf.piva= ifelse(!is.na(p.iva), paste0(cf.piva, ",", p.iva), cf.piva)) %>% select(-p.iva) 
+infoprov.PF <- divide_column_by_character(infoprov.PF, cf.piva, ",")
 
 infoprov.PF <- left_join(infoprov.PF, GEO.metadata %>% select(city, province, region), by = "city", relationship = "many-to-many")
 infoprov.PF <- infoprov.PF %>% distinct()
