@@ -128,7 +128,31 @@ add_type_subject_column <- function(data) {
 # ENTITIES <- add_type_subject_column(ENTITIES)
 
 
+add_age_column <- function(data) {
+  result <- data %>%
+    mutate(
+      is_individual = nchar(cf.piva) == 16,
+      age = case_when(
+        is_individual ~ {
+          year_of_birth <- as.numeric(stringr::str_sub(cf.piva, start = 7L, end = 8L))
+          current_year <- as.numeric(format(Sys.Date(), "%Y"))
+          ifelse(
+            year_of_birth >= 0 & year_of_birth <= (current_year - 2018),
+            current_year - (2000 + year_of_birth),
+            current_year - (1900 + year_of_birth)
+          )
+        },
+        TRUE ~ NA_real_
+      )
+    ) %>%
+    select(-is_individual)
+  
+  return(result)
+}
 
+###-----------------------------------------------------------------------###
+#-----                Info providing Functions                        -----         
+###-----------------------------------------------------------------------###
 fct.emp <- function(x) { 
   y <- x * 12 * (1 - 0.09)  
   x.1 <- 15*10^3 
