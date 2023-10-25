@@ -26,7 +26,8 @@ anagrafiche <- anagrafiche %>%
     cf.piva = ifelse(
       !is.na(partita.iva.aziende) & is.na(codice.fiscale.persona.fisica), partita.iva.aziende,
       ifelse(!is.na(codice.fiscale.persona.fisica) & is.na(partita.iva.aziende), codice.fiscale.persona.fisica,
-             ifelse(forma.giuridica %in% c("ind", "prv"), codice.fiscale.persona.fisica, partita.iva.aziende)
+             ifelse(is.na(codice.fiscale.persona.fisica) & is.na(partita.iva.aziende), NA, 
+                    ifelse(codice.fiscale.persona.fisica != partita.iva.aziende, paste0(codice.fiscale.persona.fisica, ",", partita.iva.aziende), partita.iva.aziende))
       )
     )
   )
