@@ -49,7 +49,7 @@ GEO.metadata <- GEO.metadata %>% mutate_all(tolower)
 entities <- entities %>% rename("or.province" =province)
 
 # Merge specific columns from 'city_info' into 'ENTITIES'
-entities <- left_join(entities, GEO.metadata %>% select(city, province, region, area), by = "city")
+entities <- left_join(entities, GEO.metadata %>% select(city, province, region, area), by = "city", relationship = "many-to-many")
 entities <- entities %>% distinct()
 
 

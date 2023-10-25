@@ -10,7 +10,7 @@ infoprov.PF <- infoprov.PF %>% mutate(date.infoprov = NA,
                                       income.net = NA)
 infoprov.PF$name <- paste(infoprov.PF$cognome,infoprov.PF$nome,sep = ' ')
 
-infoprov.PF <- left_join(infoprov.PF, GEO.metadata %>% select(city, province, region), by = "city")
+infoprov.PF <- left_join(infoprov.PF, GEO.metadata %>% select(city, province, region), by = "city", relationship = "many-to-many")
 infoprov.PF <- infoprov.PF %>% distinct()
 
 
