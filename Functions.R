@@ -150,7 +150,7 @@ add_age_column <- function(data) {
   return(result)
 }
 
-add_type.pg_column <- function(data) {
+update_type.pg_column <- function(data) {
   result <- data %>%
     mutate(type.pg = case_when(
       str_detect(type.pg, "societa' a responsabilita' limitata")  ~ "srl",
