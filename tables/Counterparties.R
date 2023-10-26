@@ -15,6 +15,7 @@ counterparties <- counterparties %>% mutate(role= case_when(role == "both"  ~ "b
                                                             role == "borrower"  ~ "borrower",
                                                             role == "guarantor" ~  "guarantor"))
 counterparties <- counterparties %>% rbind(g)
+#dup.c <- counterparties[duplicated(counterparties$id.bor) | duplicated(counterparties$id.bor, fromLast = TRUE), ]
 
 #id
 counterparties$id.counterparty <- paste0("c", seq_len(nrow(counterparties)))

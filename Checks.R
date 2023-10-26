@@ -62,7 +62,6 @@ check_entity_counts <- function(counterparties, link_c_e) {
   for (counterparty_id in unique_counterparties) {
     count_in_link_c_e <- sum(link_c_e$id.counterparty == counterparty_id)
     expected_count <- entity_counts[counterparty_id == unique_counterparties]
-    print(counterparty_id)
     if (count_in_link_c_e != expected_count) {
       cat("Mismatch for Counterparty in Link_Counterparty_Entity", counterparty_id, ": Expected", expected_count, "but found", count_in_link_c_e, "\n")
     }
