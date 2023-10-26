@@ -49,7 +49,6 @@ check_id_inLinkingTable <- function(linkingTable, entity_or_counterparty_df, id_
 
 # Example usage with modified names
 check_id_inLinkingTable(link.counterparties.entities, counterparties, "id.counterparty")
-check_id_inLinkingTable(link.counterparties.entities, entities, "id.entity")
 
 
 #it measures, for a given ID_Counterparty, the number of ID_Entity in Link_Counterparty_Entity
@@ -97,7 +96,8 @@ check_name_format(counterparties)
 ###-----------------------------------------------------------------------###
 #-----                     Entities Table                              -----         
 ###-----------------------------------------------------------------------###
-
+#The ID must exist in Link_Counterparty_Entity
+check_id_inLinkingTable(link.counterparties.entities, entities, "id.entity")
 
 
 #For the cf.piva column, Unless NULL, there should not be duplicates
@@ -142,3 +142,50 @@ if (nrow(non_individuals) == 0) {
 } else {
   print(paste("The following CFs are not classified as individuals:", toString(non_individuals$cf.piva)))
 }
+
+
+#sex, range_age, age, solvency_pf, income_pf 'Allowed only if type_subject == "individual"
+check_columns_pf <- function(dataframe){
+  df <- dataframe %>% filter(type.subject == "corporate") %>% select(id.entity, sex, age, range.age, solvency.pf, income.pf)
+  #is_all_na <- all(apply(df, 2, function(col) all(is.na(col))))
+  df <- df %>% filter(!is.na(sex) |!is.na(age) |!is.na(range.age) | !is.na(solvency.pf) | !is.na(income.pf)) %>% select(id.entity)
+  if (nrow(df) == 0) {
+    print("There are no individual values in corporate rows")
+  } else {
+    message("Here are the entities that are corporate but have individual's values: ")
+    return(df)
+  }
+}
+check_columns_pf(entities)
+
+
+#type_pg, status_pg, date_cessation 'Allowed only if type_subject != "individual"
+check_columns_pf <- function(dataframe){
+  df <- dataframe %>% filter(type.subject != "corporate") %>% select(id.entity, type.pg, status.pg, date.cessation)
+  #is_all_na <- all(apply(df, 2, function(col) all(is.na(col))))
+  df <- df %>% filter(!is.na(type.pg) |!is.na(status.pg) |!is.na(date.cessation)) %>% select(id.entity)
+  if (nrow(df) == 0) {
+    print("There are no corporate values in individual rows")
+  } else {
+    message("Here are the entities that are invididuals but have corporate's values: ")
+    return(df)
+  }
+}
+check_columns_pf(entities)
+
+
+#GBV_Residual = Principal + Interest + Expenses + Penalties
+check_gbv_sum <- function(dataframe){
+  df <- dataframe %>% mutate(diff = gbv.original-principal-interest-penalties-expenses) %>%
+    mutate(check_gbv = ifelse(is.na(diff),FALSE,ifelse(abs(diff)<0.5, TRUE, FALSE))) %>% 
+    select(-diff) 
+  df1 <- df %>% filter (check_gbv == FALSE) %>% select(id.loan)
+  if (sum(df$check_gbv)==nrow(df)) {
+    print("OK: GBV_Residual = Principal + Interest + Expenses + Penalties")
+  } else {
+    message("GBV_Residual != Principal + Interest + Expenses + Penalties. In the following loans: ")
+    return(df1)
+  }
+}
+check_gbv_sum(Loans)
+
