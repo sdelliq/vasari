@@ -65,7 +65,7 @@ entities.loans <- updated.entities  %>%
   left_join(Loans,by = 'id.bor',relationship = "many-to-many")
 
 #----------------------------------------#
-#----  entities by type.subject  ------
+#----  counterparties by type.subject  ------
 #----------------------------------------#
 
 ent.by.type <- entities.loans %>% 
@@ -91,7 +91,7 @@ total.row <- ent.by.type %>%
 ent.by.type <- rbind(total.row,ent.by.type)
 
 #----------------------------------------#
-#----  entities by area  ------
+#----  counterparties by area  ------
 #----------------------------------------#
 
 ent.by.area <- entities.loans %>% 
@@ -118,7 +118,7 @@ ent.by.area <- rbind(total.row,ent.by.area)
 
 
 #----------------------------------------#
-#----  entities by province - Top 5  -----
+#----  counterparties by province - Top 5  -----
 #----------------------------------------#
 ent.by.province <- entities.loans %>% 
   select(province,id.bor,gbv.original) %>%  distinct() %>%
@@ -140,7 +140,7 @@ names(Top_5_province_by_gbv) <- c("province", "ndg","sum.gbv","%.ndg","%.gbv")
 
 
 #----------------------------------------#
-#----  entities by solvency  -----
+#----  counterparties by solvency  (brutto)-----
 #----------------------------------------#
 
 
@@ -168,4 +168,60 @@ total.row <- ent.by.solvency %>%
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 ent.by.solvency <- rbind(total.row,ent.by.solvency)
 
+
+#----------------------------------------#
+#----  counterparties by solvency  -----
+#----------------------------------------#
+solvency_order <- c("Pensioner", "Employee-Permanent","Employee-N/A","Employee-Temporary", "Real Estate","Self-Employed", "Insolvent","Deceased")
+solvency_order <- rev(solvency_order)
+counter.by.solvency <- entities.loans %>% select(id.counterparty,gbv.original,solvency.pf)%>% distinct() %>% 
+  group_by(id.counterparty,gbv.original) %>% slice(1) %>% ungroup() %>%
+  group_by(id.counterparty) %>%
+  summarise(solvency.pf =  min(solvency.pf, order = match(solvency.pf, solvency_order)),
+            gbv.original = sum(gbv.original))
+
+counter.by.solvency <- counter.by.solvency %>% mutate(solvency.pf = case_when(
+    solvency.pf == '1' ~ "Deceased",
+    solvency.pf == '2' ~ "Insolvent",
+    solvency.pf == '3' ~"Self-Employed",
+    solvency.pf == '4' ~"Real Estate",
+    solvency.pf == '5' ~"Employee-Temporary",
+    solvency.pf == '6' ~"Employee-N/A",
+    solvency.pf == '7' ~"Employee-Permanent",
+    solvency.pf == '8' ~"Pensioner",
+    TRUE ~ NA
+))
+
+counter.by.solvency <- counter.by.solvency %>%
+  group_by(solvency.pf) %>% summarise(n.group = n_distinct(id.counterparty), sum.gbv = sum(gbv.original))
+
+
+
+#----------------------------------------#
+#----       entities by type      ------
+#----------------------------------------#
+
+type.entities <- updated.entities %>% select(id.entity,type.subject) %>% 
+  group_by(type.subject) %>% summarise(n = n())
+
+#----------------------------------------#
+#----       entities by area      ------
+#----------------------------------------#
+
+area.entities <- updated.entities %>% select(id.entity,area) %>% 
+  group_by(area) %>% summarise(n = n())
+
+#----------------------------------------#
+#----       entities by province      ------
+#----------------------------------------#
+
+province.entities <- updated.entities %>% select(id.entity,province) %>% 
+  group_by(province) %>% summarise(n = n()) %>% arrange(desc(n)) %>% head(5)
+
+#----------------------------------------#
+#----       entities by solvency.pf  ------
+#----------------------------------------#
+
+solvency.pf.entities <- updated.entities %>% select(id.entity,solvency.pf) %>% 
+  group_by(solvency.pf) %>% summarise(n = n())
 
