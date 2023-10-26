@@ -10,9 +10,6 @@ counterparties <- counterparties %>%
               mutate(id.counterparty =  case_when(is.na(id.counterparty) ~paste0('c', nrow(counterparties)),  
                                                   !is.na(id.counterparty) ~id.counterparty))
 
-#We're creationg a linking table between borrowers and guarantors
-Link_Borrower_Guarantors <- original.garanzie %>% select(id.bor = ndg, id.guarantor = ndg.garante) %>% distinct()
-
 
 #We're adding the new entity 
 ent_da_aggiungere <- data.frame(id.entity  = paste0('e', nrow(entities)+1),
