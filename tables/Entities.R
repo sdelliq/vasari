@@ -24,14 +24,15 @@ entities <- entities %>% mutate(dummy.info=NA,
                                 status.pg=NA,
                                 flag.imputed=NA)
 
+entities <- add_type_subject_column(entities)
 entities <- entities %>% 
   mutate(data.di.nascita = as.Date(data.di.nascita, format = "%Y-%m-%d")) %>%
-  mutate(age = as.numeric(format(Sys.Date(), "%Y")) - as.numeric(format(data.di.nascita, "%Y")))
+  mutate(age= ifelse(type.subject=="individual", as.numeric(format(Sys.Date(), "%Y")) - as.numeric(format(data.di.nascita, "%Y")),NA))
 entities <- add_age_range_column(entities)
 
 #Adds 0 in start when needed 
 entities$cf.piva <- clean_cf.piva(entities$cf.piva)
-entities <- add_type_subject_column(entities)
+
 entities <- add_sex_column(entities)
 
 entities <- add_type.pg_column(entities)
