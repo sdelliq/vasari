@@ -9,7 +9,9 @@
 #install.packages("scales")
 #install.packages("feather", repos ="https://cloud.r-project.org")
 #install.packages("SmartEDA", repos ="https://cloud.r-project.org")
+#install.packages("forcats")
 
+library(forcats)
 library(readxl)
 library(dplyr)
 library(tidyr)

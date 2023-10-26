@@ -71,9 +71,9 @@ addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(62:66), cols = 
 
 
 
-insertImage(wb,sheet = "Report","File/loan.type.png",startCol = 9, startRow = 9, width = 4.5, height = 4.5, dpi = 300)
-insertImage(wb,sheet = "Report","File/entity.type.png",startCol = 9, startRow = 20, width = 4.5, height = 4.5, dpi = 300)
-insertImage(wb,sheet = "Report","File/Pie_Chart.png",startCol = 9, startRow = 41, width = 4.5, height = 4.5, dpi = 300)
-insertImage(wb,sheet = "Report","File/province_plot.png",startCol = 9, startRow = 31, width = 4.5, height = 4.5, dpi = 300)
+insertImage(wb,sheet = "Report","File/loan.type.png",startCol = 8, startRow = 3, width = 4.5, height = 4.5, dpi = 300)
+insertImage(wb,sheet = "Report","File/entity.type.png",startCol = 14, startRow = 3, width = 4.5, height = 4.5, dpi = 300)
+insertImage(wb,sheet = "Report","File/Pie_Chart.png",startCol = 8, startRow = 30, width = 4.5, height = 4.5, dpi = 300)
+insertImage(wb,sheet = "Report","File/province_plot.png",startCol = 14, startRow = 30, width = 4.5, height = 4.5, dpi = 300)
 
 saveWorkbook(wb, file = "File/Teaser.xlsx", overwrite = TRUE)

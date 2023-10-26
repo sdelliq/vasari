@@ -99,9 +99,6 @@ check_name_format(counterparties)
 ###-----------------------------------------------------------------------###
 
 
-#The ID must exist in Link_Counterparty_Entity
-check_counterparties(link.counterparties.entities, entities)
-
 
 #For the cf.piva column, Unless NULL, there should not be duplicates
 check_duplicates_cf.piva <- function(data, column) {

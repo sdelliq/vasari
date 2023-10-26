@@ -70,7 +70,10 @@ entities.loans <- updated.entities  %>%
 
 ent.by.type <- entities.loans %>% 
              select(type.subject,id.bor,gbv.original) %>% distinct() %>%
-  group_by(id.bor) %>% summarise(type.subject= first(type.subject),gbv.original = sum(gbv.original))
+  group_by(id.bor) %>% 
+  summarise(gbv.original= ifelse('individual' %in% type.subject & 'corporate' %in% type.subject,sum(gbv.original[type.subject=='individual']),sum(gbv.original)),
+            type.subject = ifelse('individual' %in% type.subject,'individual','corporate'))
+                     
 
 
 ent.by.type <- ent.by.type %>% group_by(type.subject) %>% 
