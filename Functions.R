@@ -96,12 +96,12 @@ add_sex_column <- function(data) {
 add_type.pg_column <- function(data) {
   result <- data %>%
     mutate(type.pg = case_when(
-      str_detect(name, "srl|s.r.l|s.r.l.|srls")  ~ "srl",
-      str_detect(name, "d.i|d.i.")  ~ "di",
-      str_detect(name, " ss |s.s|s.s.|societa' semplice")  ~ "ss",
-      str_detect(name, " sas |s.a.s|s.a.s.")  ~ "sas",
-      str_detect(name, "snc|s.n.c|s.n.c.|sncs")  ~ "snc",
-      str_detect(name, " sc |s.c|s.c.|scs")  ~ "sc",
+      str_detect(name, "srl\\b|s.r.l\\b|s.r.l.\\b|srls\\b")  ~ "srl",
+      str_detect(name, " d.i\\b | d.i.\\b")  ~ "di",
+      str_detect(name, " ss\\b |s.s\\b|s.s.\\b|societa' semplice\\b")  ~ "ss",
+      str_detect(name, " sas \\b|s.a.s\\b|s.a.s.\\b")  ~ "sas",
+      str_detect(name, "snc\\b|s.n.c\\b|s.n.c.\\b|sncs\\b")  ~ "snc",
+      str_detect(name, " sc\\b |s.c\\b|s.c.\\b|scs\\b")  ~ "sc",
       TRUE ~ NA_character_
     ))
 } 
