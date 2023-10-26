@@ -50,7 +50,7 @@ check_id_inLinkingTable <- function(linkingTable, entity_or_counterparty_df, id_
 # Example usage with modified names
 check_id_inLinkingTable(link.counterparties.entities, counterparties, "id.counterparty")
 check_id_inLinkingTable(link.counterparties.entities, entities, "id.entity")
-missing_ids <- setdiff(entities$id.entity, link.counterparties.entities$id.entity)
+
 
 #it measures, for a given ID_Counterparty, the number of ID_Entity in Link_Counterparty_Entity
 check_entity_counts <- function(counterparties, link_c_e) {
@@ -68,21 +68,6 @@ check_entity_counts <- function(counterparties, link_c_e) {
   }
 }
 check_entity_counts(counterparties, link.counterparties.entities)
-
-
-unique_counterparties <- unique(counterparties$id.counterparty)
-entity_counts <- counterparties$n.entities[match(unique_counterparties, counterparties$id.counterparty)]
-
-# Check if the count of appearances in another_df equals n.entities
-for (counterparty_id in unique_counterparties) {
-  count_in_link_c_e <- sum(link.counterparties.entities$id.counterparty == counterparty_id)
-  expected_count <- entity_counts[counterparty_id == unique_counterparties]
-  
-  if (count_in_link_c_e != expected_count) {
-    cat("Mismatch for Counterparty in Link_Counterparty_Entity", counterparty_id, ": Expected", expected_count, "but found", count_in_link_c_e, "\n")
-  }
-}
-
 
 
 #Uppercase letters allowed ("Mario Rossi" or "Random SRL" allowed)
@@ -141,19 +126,19 @@ check_duplicates_cf.piva(entities, "cf.piva")
 #There must be at least one entity for every id_counterparty.
 check_associations <- function(ids_in_counterparty, ids_in_linking_table, id_type) {
   if (n_distinct(ids_in_counterparty) == n_distinct(ids_in_linking_table)) {
-    return(paste("There is at least one", id_type, "for every", id_type))
+    return(paste("There is at least one id for every", id_type))
   } else {
     missing_ids <- setdiff(ids_in_counterparty, ids_in_linking_table)
     return(paste("Some", id_type, "are not associated with at least one entity. Here's the list:", missing_ids))
   }
 }
-check_associations(counterparties$id.counterparty, link.loans.counterparties$id.counterparty, "id_counterparty")
+check_associations(counterparties$id.counterparty, link.counterparties.entities$id.counterparty, "id_counterparty")
 
 
 #'- if cf.piva is a fiscal code ==> individual;
 # - if cf.piva is a p.iva ==> corporate, confidi, or other (NOT individual)
 # - if cf.piva is N/A, no rules apply (there can't be inconsistency in this case)
-cf.piva_and_type <- f_entities %>% select(cf.piva, type.subject) %>% filter(nchar(cf.piva) == 16) 
+cf.piva_and_type <- entities %>% select(cf.piva, type.subject) %>% filter(nchar(cf.piva) == 16) 
 non_individuals <- cf.piva_and_type %>% filter(type.subject != "individual")
 if (nrow(non_individuals) == 0) {
   print("All CFs belong to individuals")
