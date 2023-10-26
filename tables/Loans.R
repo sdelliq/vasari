@@ -31,22 +31,3 @@ Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,p
 Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,penalties,expenses), ~replace_na(.,0))
 Loans$type <- factor(Loans$type)
 Loans$status <- factor(Loans$status,levels = c('utp','bad'))
-
-#---------------------------------#
-#----     check gbv sum    ------
-#---------------------------------#
-
-
-Loans <- Loans %>% mutate(diff = gbv.original-principal-interest-penalties-expenses)%>%
-                   mutate(check_gbv = ifelse(abs(diff)<0.5,TRUE,FALSE)) %>% select(-diff) 
-
-#sum(Loans$check_gbv)==nrow(Loans)   #TRUE 
-
-Loans <- Loans %>% select(-check_gbv)
-
-
-
-
-
-
-
