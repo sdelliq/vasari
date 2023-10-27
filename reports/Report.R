@@ -8,7 +8,7 @@ showGridLines(wb, sheet = 2, showGridLines = FALSE)
 setColWidths(wb, sheet=1,cols = 1:7,widths = "auto")
 setColWidths(wb, sheet=2,cols = 1:7,widths = "auto")
 
-percentage_rows <- createStyle(numFmt = "0.00%",fontSize = 10,halign = "right",valign = "center",fontColour = "black",wrapText = FALSE)
+percentage_rows <- createStyle(numFmt = "0.0%",fontSize = 10,halign = "right",valign = "center",fontColour = "black",wrapText = FALSE)
 Milion_rows <- createStyle(
   numFmt = "0.0,,\"M\"",
   fontSize = 10,
@@ -52,32 +52,31 @@ writeDataTable(wb, 1, x = loans.by.gbv.range , startRow = 15,
 addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(16:24), cols = 3 ,stack = TRUE,gridExpand = TRUE)
 addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(16:24), cols = 4 ,stack = TRUE,gridExpand = TRUE)
 
-writeData(wb, sheet = "Report", x = "Ndg by type", startCol = 1, startRow = 26)
-writeDataTable(wb, 1, x = ent.by.type , startRow = 27,
+writeData(wb, sheet = "Report", x = "Ndg by type", startCol = 1, startRow = 22)
+writeDataTable(wb, 1, x = ent.by.type , startRow = 23,
                startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(28:30), cols = 3 ,stack = TRUE,gridExpand = TRUE)
-addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(20:30), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(24:26), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(24:26), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
 
-writeData(wb, sheet = "Report", x = "Ndg by area", startCol = 1, startRow = 32)
-writeDataTable(wb, 1, x = ent.by.area , startRow = 33,
+writeData(wb, sheet = "Report", x = "Ndg by area", startCol = 1, startRow = 28)
+writeDataTable(wb, 1, x = ent.by.area , startRow = 29,
                startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-addStyle(wb, sheet = "Report", style = thousands_rows, rows = c(34:39), cols = 3 ,stack = TRUE,gridExpand = TRUE)
-addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(34:39), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(30:35), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(30:35), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
 
-writeData(wb, sheet = "Report", x = "Top 5 province by GBV ", startCol = 1, startRow = 41)
-writeDataTable(wb, 1, x = Top_5_province_by_gbv , startRow = 42,
+writeData(wb, sheet = "Report", x = "Top 5 province by GBV ", startCol = 1, startRow = 37)
+writeDataTable(wb, 1, x = Top_5_province_by_gbv , startRow = 38,
                startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-addStyle(wb, sheet = "Report", style = thousands_rows, rows = c(43:47), cols = 3 ,stack = TRUE,gridExpand = TRUE)
-addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(43:47), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(39:43), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(39:43), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
 
-ent.by.solvency[is.na(ent.by.solvency)] <- "N/A *"
-writeData(wb, sheet = "Report", x = "* refers to corporate", startCol = 1, startRow = 49)
-writeData(wb, sheet = "Report", x = "Solvency PF for Ndg", startCol = 1, startRow = 50)
-writeDataTable(wb, 1, x = ent.by.solvency , startRow = 51,
+
+writeData(wb, sheet = "Report", x = "Solvency PF for Ndg", startCol = 1, startRow = 45)
+writeDataTable(wb, 1, x = ent.by.solvency , startRow = 46,
                startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-addStyle(wb, sheet = "Report", style = thousands_rows, rows = c(52:58), cols = 3 ,stack = TRUE,gridExpand = TRUE)
-addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(52:58), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
-
+addStyle(wb, sheet = "Report", style = Milion_rows, rows = c(47:53), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report", style = percentage_rows, rows = c(47:53), cols = c(4:5) ,stack = TRUE,gridExpand = TRUE)
+writeData(wb, sheet = "Report", x = "* refers to corporate", startCol = 1, startRow = 54)
 
 insertImage(wb,sheet = "Report","File/loan.type.png",startCol = 8, startRow = 3, width = 4.5, height = 4.5, dpi = 300)
 insertImage(wb,sheet = "Report","File/entity.type.png",startCol = 14, startRow = 3, width = 4.5, height = 4.5, dpi = 300)

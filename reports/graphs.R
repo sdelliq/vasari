@@ -3,7 +3,7 @@
 #---------------------------------#
 
 #loans.by.type<- loans.by.type %>% arrange(desc(`%.gbv`))
-loan.type.plot <- loans.by.type  %>% mutate(`type` = fct_reorder(`type`,`%.gbv`))%>%
+loan.type.plot <- loans.by.type[2:4,]  %>% mutate(`type` = fct_reorder(type,`%.gbv`))%>%
   ggplot(aes(x =type , y = `%.gbv`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
   geom_text(aes(label = sprintf("%.2f%%", `%.gbv`*100),group = `type`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 3) +
@@ -24,7 +24,7 @@ ggsave("File/loan.type.png",plot = loan.type.plot)
 #----  graph entity by type ------
 #---------------------------------#
 
-entity.type.plot <- ent.by.type %>% mutate(`type.subject` = fct_reorder(`type.subject`,`%.gbv`))%>%
+entity.type.plot <- ent.by.type[2:3,] %>% mutate(`type.subject` = fct_reorder(`type.subject`,`%.gbv`))%>%
   ggplot(aes(x =type.subject , y = `%.gbv`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
   geom_text(aes(label = sprintf("%.2f%%", `%.gbv`*100),group = `type.subject`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 3) +

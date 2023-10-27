@@ -30,15 +30,14 @@ loans.by.type <- rbind(total.row,loans.by.type)
 #----  Loans by range.gbv  ------
 #---------------------------------#
 
-
-range.gbv <- c(0,25000,50000,100000,250000,500000,1000000,3000000,5000000,Inf)
-range.gbv.labels <- c('0-25k','25k-50k','50k-100k','100k-250k','250k-500k','500k-1.000k','1.000k-3.000k','3.000k-5.000k','5.000k+')
-
-
 loans.range <- Loans %>% group_by(id.bor) %>%
                          mutate(gbv.original = sum(gbv.original)) %>% 
                          ungroup() 
-                         
+
+#quantile(loans.range$gbv.original, probs= c(0.25, 0.50, 0.75))
+range.gbv <- c(0,50000,100000,200000,Inf)
+range.gbv.labels <- c('0-50k','50k-100k','100k-200k','100k+')
+
 
 loans.range$range.gbv <- cut(loans.range$gbv.original, breaks = range.gbv, labels = range.gbv.labels, include.lowest = TRUE)
 
@@ -167,6 +166,9 @@ total.row <- ent.by.solvency %>%
   summarise( solvency.pf = 'Totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 ent.by.solvency <- rbind(total.row,ent.by.solvency)
+
+ent.by.solvency <- ent.by.solvency[c(1,3:7,2),] 
+ent.by.solvency[is.na(ent.by.solvency)] <- "N/A *"
 
 
 #----------------------------------------#

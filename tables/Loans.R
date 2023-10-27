@@ -29,5 +29,11 @@ Loans <- Loans %>% select(id.loan,id.bor,id.group,originator,ptf,cluster.ptf,typ
 Loans$date.status <- as.Date(Loans$date.status)
 Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,penalties,expenses), ~as.numeric(.))
 Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,penalties,expenses), ~replace_na(.,0))
-Loans$type <- factor(Loans$type)
 Loans$status <- factor(Loans$status,levels = c('utp','bad'))
+
+Loans <- Loans %>% mutate(type= case_when(
+  str_detect(type, "scopertocc") ~ 'Bank Accounts',
+  str_detect(type, "mutuo") ~ 'Mortgages',
+  str_detect(type, "finanziamento") ~ 'Personal Loans'
+))
+Loans$type <- factor(Loans$type)
