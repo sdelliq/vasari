@@ -225,3 +225,23 @@ province.entities <- updated.entities %>% select(id.entity,province) %>%
 solvency.pf.entities <- updated.entities %>% select(id.entity,solvency.pf) %>% 
   group_by(solvency.pf) %>% summarise(n = n())
 
+#----------------------------------------------------#
+#----       entities by solvency.pf  and area  ------
+#----------------------------------------------------#
+
+pivot_table <- updated.entities %>% group_by(solvency.pf,area) %>% summarise(values = n())
+pivot_table <- as.data.frame(pivot_table)
+
+mat <- pivot_table %>%
+  pivot_wider(names_from = solvency.pf, values_from = values)
+
+mat <- as.data.frame(mat)
+mat$area <- replace_na(mat$area,'N/A')
+mat[is.na(mat)] <- 0
+mat$Total <- rowSums(mat[2:7])
+total <-  mat %>% 
+  summarise( area = 'Totals', 
+             across(-area,sum))
+mat <- rbind(mat,total)
+
+
