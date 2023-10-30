@@ -10,8 +10,15 @@ loan.type.plot <- loans.by.type[2:4,]  %>% mutate(`type` = fct_reorder(type,`%.g
   geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.4, hjust = 0.4),size = 3) +
   xlab("Type Of Loan") +
   theme_bw() +
-  scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10))
-
+  scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
+  theme(
+    panel.border = element_blank(),
+    panel.grid.minor.x = element_line(),
+    panel.grid.major.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.line = element_line(color = "black")
+  )
 
 loan.type.plot
 
@@ -31,7 +38,15 @@ entity.type.plot <- ent.by.type[2:3,] %>% mutate(`type.subject` = fct_reorder(`t
   geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.4, hjust = 0.4),size = 3) +
   xlab("Type Of Entity") +
   theme_bw() +
-scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10))
+scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
+  theme(
+    panel.border = element_blank(),
+    panel.grid.minor.x = element_line(),
+    panel.grid.major.y = element_line(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.line = element_line(color = "black")
+  )
 
 
 entity.type.plot
@@ -55,7 +70,15 @@ area_plot <- ent.by.area_no_totals %>% mutate(`area` = fct_reorder(`area`,`%.gbv
   xlab("Sum of GBV %") +
   theme_bw() +
   #scale_x_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
-  xlim(0,100)
+  xlim(0,85) +
+  theme(
+    panel.border = element_blank(),
+    panel.grid.minor.x = element_line(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.line = element_line(color = "black")
+  )
 
 area_plot
 
@@ -70,10 +93,19 @@ ggsave("File/Pie_Chart.png",plot = area_plot)
 province_plot <- Top_5_province_by_gbv[2:6,] %>% mutate(`province` = fct_reorder(`province`,`sum.gbv`)) %>% 
   ggplot(aes(x = `sum.gbv` , y = `province`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
-  geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6)), hjust = 1,size = 3) +
+  geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6)), hjust = -0.1,size = 3) +
   xlab("Sum of GBV (Millions)") +
   theme_bw() +
-  scale_x_continuous(labels = scales::comma_format(scale = 1e-6, big.mark = ","))
+  #xlim(0,16) +
+  scale_x_continuous(labels = scales::comma_format(scale = 1e-6, big.mark = ","))+
+  theme(
+    panel.border = element_blank(),
+    panel.grid.minor.x = element_line(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.line = element_line(color = "black")
+  )
 
 province_plot
 
