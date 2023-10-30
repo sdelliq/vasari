@@ -135,9 +135,17 @@ ent.by.province <- ent.by.province %>% filter(!is.na(province)) %>%
   arrange(desc(sum.gbv))
 
 Top_5_province_by_gbv <- ent.by.province[1:5, ]
+
+ent.by.province <- ent.by.province[6:21,] %>% summarise(
+  province= "others", 
+  across(c(ndg,sum.gbv,perc.ndg,perc.gbv),sum)
+)
+Top_5_province_by_gbv <- rbind(Top_5_province_by_gbv, ent.by.province)
 names(Top_5_province_by_gbv) <- c("province", "ndg","sum.gbv","%.ndg","%.gbv")
-
-
+total.row <- Top_5_province_by_gbv %>% 
+  summarise( province = 'Totals', 
+             across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
+Top_5_province_by_gbv <- rbind(total.row,Top_5_province_by_gbv)
 #----------------------------------------#
 #----  counterparties by solvency  (brutto)-----
 #----------------------------------------#
@@ -196,6 +204,105 @@ counter.by.solvency <- counter.by.solvency %>% mutate(solvency.pf = case_when(
 
 counter.by.solvency <- counter.by.solvency %>%
   group_by(solvency.pf) %>% summarise(n.group = n_distinct(id.counterparty), sum.gbv = sum(gbv.original))
+
+#----------------------------------------------------#
+#----       How many borrowers have guarantors
+# How many guarantors are individual or corporate  ------
+#----------------------------------------------------#
+
+borrowers.with.guarantors <- counterparties %>% group_by(id.bor) %>% summarise(
+  has_guarantor = ifelse(n_distinct(id.counterparty)>1, "Yes", "No"),
+  id.counterparty = paste(id.counterparty, collapse = ","),
+  role = paste(role, collapse = ",")
+)
+borrowers.with.guarantors <- divide_column_by_character(borrowers.with.guarantors, c(id.counterparty, role), ",")
+borrowers.with.guarantors <- borrowers.with.guarantors %>% left_join(link.counterparties.entities, by = "id.counterparty")
+borrowers.with.guarantors <- borrowers.with.guarantors %>% left_join(updated.entities %>% select (id.entity, type.subject), by = "id.entity")
+borrowers.with.guarantors <- borrowers.with.guarantors %>% select(-id.entity) %>% distinct()
+
+borrowers.with.guarantors <- borrowers.with.guarantors %>%
+  group_by(id.bor, role) %>% 
+  summarise(type.subject = ifelse('individual' %in% type.subject,'individual','corporate'),
+            has_guarantor = first(has_guarantor))
+
+borrowers.with.guarantors <- borrowers.with.guarantors %>% mutate(type.g = ifelse(has_guarantor=="Yes", type.subject, "no"))
+
+borrowers.with.guarantors <- borrowers.with.guarantors %>% filter(role=="borrower") %>% group_by(type.subject) %>% summarise(
+  g.individual = sum(has_guarantor == "Yes" & type.g=="individual"),
+  g.corporate = sum(has_guarantor == "Yes" & type.g=="corporate"),
+  no.guarantor = sum(has_guarantor == "No")
+)
+
+
+#----------------------------------------------------#
+#----       Type of corporate  ------
+#----------------------------------------------------#
+corporate.type <- entities.loans %>% 
+  select(type.pg,id.bor,gbv.original) %>% 
+  group_by(id.bor,gbv.original) %>% summarise(type.pg= first(type.pg)) %>% 
+  group_by(id.bor) %>% summarise(type.pg= first(type.pg),gbv.original = sum(gbv.original)) %>% distinct()
+
+
+corporate.type <- corporate.type %>%
+  group_by(type.pg) %>% 
+  summarise(ndg = n_distinct(id.bor),
+            sum.gbv = sum(gbv.original),
+            perc.ndg = sum(ndg)/total.ndg,
+            perc.gbv = sum(gbv.original)/total.gbv
+  ) %>% 
+  arrange(desc(sum.gbv))
+
+
+names(corporate.type) <- c("corporate type", "ndg","sum.gbv","%.ndg","%.gbv")
+
+total.row <- corporate.type %>% 
+  summarise( `corporate type` = 'Totals', 
+             across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
+corporate.type <- rbind(total.row,corporate.type)
+
+corporate.type <- corporate.type[c(1,3:8,2),] 
+corporate.type[is.na(corporate.type)] <- "N/A *"
+
+#----------------------------------------------------#
+#----       Status of corporate  ------
+#----------------------------------------------------#
+corporate.status <- entities.loans %>% 
+  select(status.pg,id.bor,gbv.original, type.subject) %>% distinct() #%>% 
+  #group_by(id.bor,gbv.original) %>% summarise(status.pg= first(status.pg)) %>% 
+  #group_by(id.bor) %>% summarise(status.pg= first(status.pg),gbv.original = sum(gbv.original)) %>% distinct()
+
+corporate.status <- corporate.status %>% group_by(id.bor,gbv.original) %>% summarise(
+  status.pg= first(status.pg),
+  type.subject= first(type.subject)
+  )
+
+corporate.status <- corporate.status %>%
+  group_by(id.bor) %>% 
+  summarise(type.subject = ifelse('individual' %in% type.subject,'individual','corporate'),
+            status.pg= first(status.pg),
+            gbv.original = sum(gbv.original))
+
+corporate.status <- corporate.status %>% mutate(status.pg = ifelse(type.subject=="corporate" & is.na(status.pg), "corporate N/A", status.pg))
+
+corporate.status <- corporate.status %>%
+  group_by(status.pg) %>% 
+  summarise(ndg = n_distinct(id.bor),
+            sum.gbv = sum(gbv.original),
+            perc.ndg = sum(ndg)/total.ndg,
+            perc.gbv = sum(gbv.original)/total.gbv
+  ) %>% 
+  arrange(desc(sum.gbv))
+
+
+names(corporate.status) <- c("corporate status", "ndg","sum.gbv","%.ndg","%.gbv")
+
+total.row <- corporate.status %>% 
+  summarise( `corporate status` = 'Totals', 
+             across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
+corporate.status <- rbind(total.row,corporate.status)
+
+corporate.status <- corporate.status[c(1,3:9,2),] 
+corporate.status[is.na(corporate.status)] <- "N/A *"
 
 
 

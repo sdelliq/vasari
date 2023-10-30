@@ -102,6 +102,7 @@ add_type.pg_column <- function(data) {
       str_detect(name, " sas \\b|s.a.s\\b|s.a.s.\\b")  ~ "sas",
       str_detect(name, "snc\\b|s.n.c\\b|s.n.c.\\b|sncs\\b")  ~ "snc",
       str_detect(name, " sc\\b |s.c\\b|s.c.\\b|scs\\b")  ~ "sc",
+      str_detect(name, "ass.zione") ~ "other",
       TRUE ~ NA_character_
     ))
 } 
@@ -153,12 +154,13 @@ add_age_column <- function(data) {
 update_type.pg_column <- function(data) {
   result <- data %>%
     mutate(type.pg = case_when(
+      str_detect(name, "ass.zione") ~ "other",
       str_detect(type.pg, "societa' a responsabilita' limitata")  ~ "srl",
       str_detect(type.pg, "societa' per azioni")  ~ "spa",
       str_detect(type.pg, "societa' in nome collettivo")  ~ "snc",
       str_detect(type.pg, "societa' in accomandita semplice")  ~ "sas",
       str_detect(type.pg, "cooperativa|consortile|fidi")  ~ "sc",
-      str_detect(type.pg, "associazione | non precisata")  ~ "other",
+      str_detect(type.pg, "ass.zione|associazione|non precisata")  ~ "other",
       TRUE ~ NA_character_
     ))
 } 
