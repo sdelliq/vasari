@@ -36,7 +36,7 @@ loans.range <- Loans %>% group_by(id.bor) %>%
 
 #quantile(loans.range$gbv.original, probs= c(0.25, 0.50, 0.75))
 range.gbv <- c(0,50000,100000,200000,Inf)
-range.gbv.labels <- c('0-50k','50k-100k','100k-200k','100k+')
+range.gbv.labels <- c('0-50k','50k-100k','100k-200k','200k+')
 
 
 loans.range$range.gbv <- cut(loans.range$gbv.original, breaks = range.gbv, labels = range.gbv.labels, include.lowest = TRUE)
@@ -53,6 +53,37 @@ total.row <- loans.by.gbv.range %>%
   summarise( range.gbv = 'Totals', 
              across(c(ndg,sum.gbv,`%.gbv`),sum))
 loans.by.gbv.range <- rbind(total.row,loans.by.gbv.range)
+
+
+#---------------------------------#
+#----  Loans by vintage and gbv range  ------
+#---------------------------------#
+cutoff.date <- as.Date('2023-07-12')
+loans.vintage <- Loans %>% 
+               mutate(vintage = round(as.numeric(cutoff.date - date.status)/365,0))
+
+quantile(loans.vintage$vintage, c(0.33,0.66))
+
+Range_vintage <- c(0,3,5,Inf)
+Range_vintage_labels <- c('0-3','4-5','5+')
+loans.vintage$range.vintage <- cut(loans.vintage$vintage, breaks = Range_vintage, labels = Range_vintage_labels, include.lowest = TRUE)
+loans.vintage$range.gbv <- cut(loans.vintage$gbv.original, breaks = range.gbv, labels = range.gbv.labels, include.lowest = TRUE)
+
+loans.vintage <- loans.vintage %>%
+  select(id.bor,gbv.original,range.gbv,range.vintage) %>% distinct() %>%
+  group_by(range.vintage,range.gbv) %>% 
+  summarize(n.loans = n(),sum_gbv = sum(gbv.original),perc = sum(gbv.original)/total.gbv )
+names(loans.vintage)<- c("Range.Vintage","Range.GBV",'N.Loans',"Sum.GBV"," % GBV")
+
+subtotal.row <- loans.vintage %>% group_by(Range.Vintage) %>%
+  summarise( Range.Vintage = 'Subtotals',
+             Range.GBV = ' ',
+             across(c('N.Loans',"Sum.GBV"," % GBV"),sum))
+total.row <- subtotal.row %>% summarise( Range.Vintage = 'Totals',
+                                         Range.GBV = ' ',
+                                         across(c('N.Loans',"Sum.GBV"," % GBV"),sum))
+loans.vintage <- rbind(subtotal.row,total.row,loans.vintage)
+loans.vintage <- loans.vintage[c(4,5:8,1,9:12,2,13:16,3),]
 
 #----------------------------------------#
 #----       entities -loans      ------
