@@ -119,6 +119,8 @@ area_plot <- ent.by.area_no_totals %>% mutate(`area` = fct_reorder(`area`,`%.gbv
   theme_bw() +
   scale_x_continuous(limits = c(0, 80), breaks = seq(0, 80, by = 20), labels = scales::percent_format(scale = 1)) +
   theme(
+    axis.title.y = element_text(size = 8),
+    axis.title.x = element_text(size = 8),
     panel.border = element_blank(),
     panel.grid.minor.x = element_line(),
     panel.grid.major.y = element_blank(),
@@ -147,6 +149,8 @@ province_plot <- Top_5_province_by_gbv[2:6,] %>% mutate(`province` = fct_reorder
   #xlim(0,16*1e6) +
   scale_x_continuous(labels = scales::comma_format(scale = 1e-6, big.mark = ","))+
   theme(
+    axis.title.y = element_text(size = 8),
+    axis.title.x = element_text(size = 8),
     panel.border = element_blank(),
     panel.grid.minor.x = element_line(),
     panel.grid.major.y = element_blank(),
