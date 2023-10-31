@@ -35,7 +35,7 @@ entity.type.plot <- ent.by.type[2:3,] %>% mutate(`type.subject` = fct_reorder(`t
   ggplot(aes(x =type.subject , y = `%.gbv`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
   geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100),group = `type.subject`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 3) +
-  geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.4, hjust = 0.4),size = 3) +
+  #geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.4, hjust = 0.4),size = 3) +
   xlab("Type Of Entity") +
   theme_bw() +
 scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
@@ -46,10 +46,15 @@ scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
     panel.grid.major.x = element_blank(),
     panel.grid.minor.y = element_blank(),
     axis.line = element_line(color = "black")
-  )
+  ) +
+labs(title = " ", subtitle= " ")
 
-
-entity.type.plot
+entity.type.plot 
+grid.text("Sum GBV", x=0.15, y=0.94, gp=gpar(fontsize=9))
+grid.roundrect(width=.15, height=.1, name="rr", x=0.34, y=0.94, gp=gpar(col="#1b8bbe"))
+grid.text("8.6 M", x=0.34, y=0.94, gp=gpar(fontsize=9))
+grid.roundrect(width=.15, height=.1, name="rr", x=0.74, y=0.94, gp=gpar(col="#1b8bbe"))
+grid.text("17.0 M", x=0.74, y=0.94, gp=gpar(fontsize=9))
 
 ggsave("File/entity.type.png",plot = entity.type.plot)
 
@@ -138,3 +143,11 @@ corporate.status.plot
 
 ggsave("File/corporate.status.png",plot = corporate.status.plot)
 
+
+
+#
+library(grid)
+
+
+
+# }
