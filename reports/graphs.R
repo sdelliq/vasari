@@ -39,8 +39,6 @@ x_positions <- seq(0.26, 0.82, length.out = n_values)
 
 add_grid_elements(values, x_positions, 0.12, 0.06, 0.2)
 
-dev.off()
-
 
 #---------------------------------#
 #----  graph entity by type ------
@@ -71,7 +69,6 @@ values <- c("8.6 M", "17.0 M")
 n_values <- length(values)
 x_positions <- seq(0.34, 0.74, length.out = n_values)
 add_grid_elements(values, x_positions, 0.16, 0.06, 0.2)
-dev.off()
 
 
 #----------------------------------------#
@@ -104,8 +101,8 @@ values <- c("0.0 M", "1.2 M", "1.9 M", "2.8 M", "3.2 M", "3.8 M", "4.1 M")
 n_values <- length(values)
 x_positions <- seq(0.17, 0.91, length.out = n_values)
 add_grid_elements(values, x_positions, 0.06, 0.05, 0.15)
-dev.off()
 
+graphics.off()
 #----------------------------------------#
 #----  entities by area  ------
 #----------------------------------------#
