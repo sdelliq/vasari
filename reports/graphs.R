@@ -103,7 +103,7 @@ grid.text("Sum GBV", x=0.05, y=0.94, gp=gpar(fontsize=9))
 values <- c("0.0 M", "1.2 M", "1.9 M", "2.8 M", "3.2 M", "3.8 M", "4.1 M")
 n_values <- length(values)
 x_positions <- seq(0.17, 0.91, length.out = n_values)
-add_grid_elements(values, x_positions, 0.057, 0.047, 0.12)
+add_grid_elements(values, x_positions, 0.06, 0.05, 0.15)
 dev.off()
 
 #----------------------------------------#
@@ -118,10 +118,9 @@ area_plot <- ent.by.area_no_totals %>% mutate(`area` = fct_reorder(`area`,`%.gbv
   ggplot(aes(x = `%.gbv` , y = `area`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
   geom_text(aes(label = sprintf("%.1f%%", `%.gbv`)), hjust = -0.1,size = 3) +
-  xlab("Sum of GBV %") +
+  xlab(" % GBV") +
   theme_bw() +
-  #scale_x_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
-  xlim(0,85) +
+  scale_x_continuous(limits = c(0, 80), breaks = seq(0, 80, by = 20), labels = scales::percent_format(scale = 1)) +
   theme(
     panel.border = element_blank(),
     panel.grid.minor.x = element_line(),

@@ -1,12 +1,12 @@
 wb <- createWorkbook()
 addWorksheet(wb, sheetName = "Report")
-addWorksheet(wb, sheetName = "Report_Entities")
+#addWorksheet(wb, sheetName = "Report_Entities")
 
 showGridLines(wb, sheet = 1, showGridLines = FALSE)
-showGridLines(wb, sheet = 2, showGridLines = FALSE)
+#showGridLines(wb, sheet = 2, showGridLines = FALSE)
 
 setColWidths(wb, sheet=1,cols = 1:7,widths = "auto")
-setColWidths(wb, sheet=2,cols = 1:7,widths = "auto")
+#setColWidths(wb, sheet=2,cols = 1:7,widths = "auto")
 
 percentage_rows <- createStyle(numFmt = "0.0%",fontSize = 10,halign = "right",valign = "center",fontColour = "black",wrapText = FALSE)
 Milion_rows <- createStyle(
@@ -158,22 +158,21 @@ insertImage(wb,sheet = "Report","File/province_plot.png",startCol = 14, startRow
 insertImage(wb,sheet = "Report","File/corporate.status.png",startCol = 10, startRow = 57, width = 6.5, height = 5, dpi = 300)
 
 
-
-writeData(wb,2,'Report Entities',1,1)
-
-writeData(wb, sheet = "Report_Entities", x = "Entity by type", startCol = 1, startRow = 3)
-writeDataTable(wb, 2, x = type.entities , startRow = 4, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-
-area.entities[is.na(area.entities)] <- "N/A"
-writeData(wb, sheet = "Report_Entities", x = "Entity by area", startCol = 1, startRow = 8)
-writeDataTable(wb, 2, x = area.entities , startRow = 9, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-
-writeData(wb, sheet = "Report_Entities", x = "Entity by province (Top 5)", startCol = 1, startRow = 17)
-writeDataTable(wb, 2, x = province.entities , startRow = 18, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
-
-solvency.pf.entities[is.na(solvency.pf.entities)] <- "N/A"
-writeData(wb, sheet = "Report_Entities", x = "Entity by solvency", startCol = 1, startRow = 25)
-writeDataTable(wb, 2, x = solvency.pf.entities , startRow = 26, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
+# writeData(wb,2,'Report Entities',1,1)
+# 
+# writeData(wb, sheet = "Report_Entities", x = "Entity by type", startCol = 1, startRow = 3)
+# writeDataTable(wb, 2, x = type.entities , startRow = 4, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
+# 
+# area.entities[is.na(area.entities)] <- "N/A"
+# writeData(wb, sheet = "Report_Entities", x = "Entity by area", startCol = 1, startRow = 8)
+# writeDataTable(wb, 2, x = area.entities , startRow = 9, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
+# 
+# writeData(wb, sheet = "Report_Entities", x = "Entity by province (Top 5)", startCol = 1, startRow = 17)
+# writeDataTable(wb, 2, x = province.entities , startRow = 18, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
+# 
+# solvency.pf.entities[is.na(solvency.pf.entities)] <- "N/A"
+# writeData(wb, sheet = "Report_Entities", x = "Entity by solvency", startCol = 1, startRow = 25)
+# writeDataTable(wb, 2, x = solvency.pf.entities , startRow = 26, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
 
 
 
