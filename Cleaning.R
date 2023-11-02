@@ -4,6 +4,7 @@ original.borrowers.individual <- original.borrowers.individual %>% mutate_all(to
 original.posizioni <- original.posizioni %>% mutate_all(tolower)
 original.anagrafiche <- original.anagrafiche %>% mutate_all(tolower)
 original.garanzie <- original.garanzie %>% mutate_all(tolower)
+original.pdr <- original.pdr %>% mutate_all(tolower)
 
 #Cleaning the column names
 colnames(original.borrowers.corporate) <- clean_column_names(colnames(original.borrowers.corporate))
@@ -11,12 +12,14 @@ colnames(original.borrowers.individual) <- clean_column_names(colnames(original.
 colnames(original.posizioni) <- clean_column_names(colnames(original.posizioni))
 colnames(original.anagrafiche) <- clean_column_names(colnames(original.anagrafiche))
 colnames(original.garanzie) <- clean_column_names(colnames(original.garanzie))
+colnames(original.pdr) <-  clean_column_names(colnames(original.pdr))
 
 #Trim
 original.borrowers.corporate <- original.borrowers.corporate %>% mutate_all(str_trim)
 original.borrowers.individual <- original.borrowers.individual %>% mutate_all(str_trim)
 original.posizioni <- original.posizioni %>% mutate_all(str_trim)
 original.anagrafiche <- original.anagrafiche %>% mutate_all(str_trim)
+original.pdr <- original.pdr %>%  mutate_all(str_trim)
 
 #
 anagrafiche <- original.anagrafiche
@@ -58,3 +61,11 @@ anagrafiche <- anagrafiche %>% mutate(data.di.nascita = as.Date.character(data.d
 original.garanzie <- original.garanzie %>% select(-`x.immobili`)
 original.garanzie$intestazione.garante <- gsub("\\s+", " ", original.garanzie$intestazione.garante)
 original.garanzie$intestazione.garante <- gsub("[,.*]+$", "", original.garanzie$intestazione.garante)
+
+# Cleaning original.pdr:
+original.pdr <- original.pdr %>%
+  mutate(across(c(starts_with("data"),starts_with("dt")), ~ as.Date(.)))
+
+columns_to_convert <- c("importo.dovuto", "qta.rate", "importo.singole.rate", "pagamento", "importo.saldo", "sum.attivo", "qta.pagamenti.presenti")
+original.pdr <- original.pdr %>%
+  mutate_at(columns_to_convert, as.numeric)
