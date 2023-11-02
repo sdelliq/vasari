@@ -10,14 +10,22 @@ counterparties <- counterparties %>% mutate (id.group = NA,
                                                              tipo.anagrafica.d.debitore.g.garante.dg.debitore.e.garante == "dg" ~  "both"),
                                              flag.imputed=NA)
 
-g <- counterparties %>% filter(role == "both") %>% mutate(role= "guarantor")
+both <- counterparties %>% filter(role == "both") %>% select(id.bor) 
+g <- original.garanzie %>% filter(ndg.garante %in% both$id.bor & ndg.garante != ndg) %>% select(ndg.garante) %>% distinct() 
+
+
+real.g <- left_join(g %>% select (id.bor = ndg.garante), counterparties, by= "id.bor") %>% 
+  mutate(role = 'guarantor') 
 counterparties <- counterparties %>% mutate(role= case_when(role == "both"  ~ "borrower",
                                                             role == "borrower"  ~ "borrower",
                                                             role == "guarantor" ~  "guarantor"))
-counterparties <- counterparties %>% rbind(g)
+counterparties <- counterparties %>% rbind(real.g)
 #dup.c <- counterparties[duplicated(counterparties$id.bor) | duplicated(counterparties$id.bor, fromLast = TRUE), ]
 
 #id
 counterparties$id.counterparty <- paste0("c", seq_len(nrow(counterparties)))
 
 counterparties <- counterparties %>% select(id.counterparty, id.bor, id.group, role, name, flag.imputed)
+
+
+
