@@ -22,3 +22,8 @@ source("tables/link.loans.counterparties.R")
 source("tables/Infoprov_PG.r")
 source("tables/infoprov.Individual.R")
 source("tables/Entities_Infoprovided.R")
+source("tables/Agreement.proj.R")
+
+source("reports/tables.report.R")
+source("reports/graphs.R")
+source("reports/Report.R")
