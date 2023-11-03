@@ -1,6 +1,6 @@
 
-Guarantors <- original.garanzie %>% select(ndg.garante,intestazione.garante) %>% distinct()
-Guarantors_Groups <- Guarantors %>% rename(id.bor = ndg.garante, name = intestazione.garante) %>% 
+Guarantors <- original.garanzie %>% select(ndg,intestazione.garante) %>% distinct()
+Guarantors_Groups <- Guarantors %>% rename(id.bor = ndg, name = intestazione.garante) %>% 
   filter(!(id.bor %in% counterparties$id.bor))
 Guarantors_Groups <- Guarantors_Groups %>% mutate(id.counterparty = NA, id.group = NA,role = 'guarantor',flag.imputed = NA)
 counterparties <-  rbind(counterparties,Guarantors_Groups) %>% distinct()

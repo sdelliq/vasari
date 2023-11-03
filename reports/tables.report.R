@@ -248,7 +248,7 @@ borrowers.with.guarantors <- counterparties %>% group_by(id.bor) %>% summarise(
 )
 borrowers.with.guarantors <- divide_column_by_character(borrowers.with.guarantors, c(id.counterparty, role), ",")
 borrowers.with.guarantors <- borrowers.with.guarantors %>% left_join(link.counterparties.entities, by = "id.counterparty")
-borrowers.with.guarantors <- borrowers.with.guarantors %>% left_join(updated.entities %>% select (id.entity, type.subject), by = "id.entity")
+borrowers.with.guarantors <- borrowers.with.guarantors %>% left_join(updated.entities %>% select (id.entity, type.subject), by = "id.entity",relationship = "many-to-many")
 borrowers.with.guarantors <- borrowers.with.guarantors %>% select(-id.entity) %>% distinct()
 
 borrowers.with.guarantors <- borrowers.with.guarantors %>%
@@ -383,5 +383,69 @@ total <-  mat %>%
   summarise( area = 'Totals', 
              across(-area,sum))
 mat <- rbind(mat,total)
+
+
+#----------------------------------------------------#
+#----     total   agreement  ------
+#----------------------------------------------------#
+
+total.agreement <- n_distinct(agreement.summary$id.agreement)
+total.gbv.agreement <- sum(agreement.summary$gbv.agreement)
+total.amount.agreed <- sum(agreement.summary$amount.agreement)
+
+total.pdr <- data.frame(N.Agreement = total.agreement,
+                        Amount.agreed = total.amount.agreed,
+                        Due.GBV = total.gbv.agreement
+                        )
+#----------------------------------------------------#
+#----       agreement by status  ------
+#----------------------------------------------------#
+
+
+agreemeent.by.status <- agreement.summary %>% 
+  group_by(status) %>% 
+  summarise(n.agreement = n_distinct(id.agreement),'%.agreement' = n.agreement / total.agreement)
+total.row <- agreemeent.by.status %>% summarise(status = 'totals', n.agreement=sum(n.agreement), `%.agreement`= sum(`%.agreement`))
+agreemeent.by.status <- rbind(total.row,agreemeent.by.status)
+#----------------------------------------------------#
+#----       agreement by discount ------
+#----------------------------------------------------#
+
+agreement.summary.discount <- agreement.summary %>% mutate(discount = round((gbv.agreement-amount.agreement)/gbv.agreement,2))
+quantile(agreement.summary.discount$discount,c(0.33,0.66))
+
+# 0.33 , 0.44
+
+Range_discount <- c(0,0.32,0.4,Inf)
+Range_discount_labels <- c('0-32%','32-40%','40-100%')
+agreement.summary.discount$discount <- cut(agreement.summary.discount$discount, breaks = Range_discount, labels = Range_discount_labels, include.lowest = TRUE)
+
+reference_df <- expand.grid(
+  status = unique(agreement.summary.discount$status),
+  discount = unique(agreement.summary.discount$discount)
+)
+
+agreement.summary.discount <- agreement.summary.discount %>% 
+  group_by(status,discount) %>% 
+  summarise(n.agreement = n_distinct(id.agreement),paid = sum(paid),amount.agreed = sum(amount.agreement),total.debt = sum(gbv.agreement))
+  
+agreement.summary.discount <- merge(reference_df, agreement.summary.discount, by = c("status", "discount"), all = TRUE)
+agreement.summary.discount[is.na(agreement.summary.discount)]<-0
+subtotal.row <- agreement.summary.discount %>% group_by(status) %>%
+  summarise( status = 'Subtotals',
+             discount = ' ',
+             across(c('n.agreement',"paid","amount.agreed","total.debt"),sum))
+total.row <- subtotal.row %>% summarise( status = 'Totals',
+                                         discount = ' ',
+                                         across(c('n.agreement',"paid","amount.agreed","total.debt"),sum))
+agreement.summary.discount <- rbind(total.row,agreement.summary.discount,subtotal.row)
+agreement.summary.discount <- agreement.summary.discount[c(1:4,11,8:10,13,5:7,12),]
+#----------------------------------------------------#
+#----       agreement by role ------
+#----------------------------------------------------#
+
+agree.by.role <- agreement.summary %>% 
+  left_join(counterparties %>% select(id.counterparty,role), by = 'id.counterparty') %>%
+  group_by(role) %>% summarise(n.agreement = n_distinct(id.agreement),'%.agreement'= round(n.agreement/total.agreement,2))
 
 
