@@ -172,8 +172,8 @@ addStyle(wb, sheet = "Report", style = total_rows, rows = 78, cols = c(1:5) ,sta
 addStyle(wb, sheet = "Report", style = subtotal_rows, rows = c(83,88,93), cols = c(1:5) ,stack = TRUE,gridExpand = TRUE)
 
 
-insertImage(wb,sheet = "Report","File/loan.type.png",startCol = 8, startRow = 3, width = 5, height = 5, dpi = 300)
-insertImage(wb,sheet = "Report","File/entity.type.png",startCol = 14, startRow = 3, width = 5, height = 5, dpi = 300)
+insertImage(wb,sheet = "Report","File/loan.type.png",startCol = 8, startRow = 3, width = 4.5, height = 4.85, dpi = 300)
+insertImage(wb,sheet = "Report","File/entity.type.png",startCol = 14, startRow = 3, width = 4.5, height = 4.85, dpi = 300)
 insertImage(wb,sheet = "Report","File/Pie_Chart.png",startCol = 8, startRow = 30, width = 4, height = 4, dpi = 300)
 insertImage(wb,sheet = "Report","File/province_plot.png",startCol = 14, startRow = 30, width = 4, height = 4, dpi = 300)
 insertImage(wb,sheet = "Report","File/corporate.status.png",startCol = 10, startRow = 57, width = 6, height = 5, dpi = 300)

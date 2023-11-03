@@ -29,7 +29,7 @@ loan.type.plot <- loans.by.type[2:4,]  %>% mutate(`type` = fct_reorder(type,`%.g
   ) +
 labs(title = " ", subtitle= " ")
 
-png("File/loan.type.png", units = "px") 
+png("File/loan.type.png",width = 500, height = 600, units = "px") 
 loan.type.plot 
 grid.text("Sum GBV", x=0.12, y=0.94, gp=gpar(fontsize=9))
 values <- c("5.0 M", "8.4 M", "12.2 M")
@@ -62,7 +62,7 @@ scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
   ) +
 labs(title = " ", subtitle= " ")
 
-png("File/entity.type.png", units = "px") 
+png("File/entity.type.png", width = 500, height = 600,units = "px") 
 entity.type.plot
 grid.text("Sum GBV", x=0.15, y=0.94, gp=gpar(fontsize=9))
 values <- c("8.6 M", "17.0 M")
@@ -94,7 +94,7 @@ corporate.status.plot <- corporate.status[2:8,] %>% mutate(`corporate status` = 
   labs(title = " ", subtitle= " ")
 
 
-png("File/corporate.status.png", units = "px") 
+png("File/corporate.status.png",width = 600, height = 600, units = "px") 
 corporate.status.plot
 grid.text("Sum GBV", x=0.05, y=0.94, gp=gpar(fontsize=9))
 values <- c("0.0 M", "1.2 M", "1.9 M", "2.8 M", "3.2 M", "3.8 M", "4.1 M")
@@ -132,7 +132,7 @@ area_plot <- ent.by.area_no_totals %>% mutate(`area` = fct_reorder(`area`,`%.gbv
 
 area_plot
 
-ggsave("File/Pie_Chart.png",plot = area_plot)
+ggsave("File/Pie_Chart.png",width = 4.5, height = 4.5,plot = area_plot)
 
 
 
@@ -162,7 +162,7 @@ labs(title = " ", subtitle= " ")
 
 province_plot
 
-ggsave("File/province_plot.png",plot = province_plot)
+ggsave("File/province_plot.png",width = 4.5, height = 4.5,plot = province_plot)
 
 
 
@@ -186,4 +186,4 @@ status.plot <- ggplot(status.discount, aes(x = status)) +
   theme_minimal()
 
 status.plot
-ggsave("File/status.plot.png",plot = status.plot)
+ggsave("File/status.plot.png",width = 4.5, height = 4.5,plot = status.plot)
