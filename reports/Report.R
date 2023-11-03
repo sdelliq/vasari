@@ -1,12 +1,12 @@
 wb <- createWorkbook()
 addWorksheet(wb, sheetName = "Report")
-#addWorksheet(wb, sheetName = "Report_Entities")
+addWorksheet(wb, sheetName = "Report_Agreement")
 
 showGridLines(wb, sheet = 1, showGridLines = FALSE)
-#showGridLines(wb, sheet = 2, showGridLines = FALSE)
+showGridLines(wb, sheet = 2, showGridLines = FALSE)
 
 setColWidths(wb, sheet=1,cols = 1:7,widths = "auto")
-#setColWidths(wb, sheet=2,cols = 1:7,widths = "auto")
+setColWidths(wb, sheet=2,cols = 1:7,widths = "auto")
 
 percentage_rows <- createStyle(numFmt = "0.0%",fontSize = 10,halign = "right",valign = "center",fontColour = "black",wrapText = FALSE)
 Milion_rows <- createStyle(
@@ -56,7 +56,28 @@ subtotal_rows <- createStyle(
   wrapText = FALSE
 )
 
-
+subtotal_rows_yellow <- createStyle(
+  fontSize = 11,
+  fgFill = "#FFFCF1",
+  border="bottom",
+  fontColour = "black",
+  wrapText = FALSE
+)
+subtotal_rows_green <- createStyle(
+  fontSize = 11,
+  fgFill = "#EFFFE6",
+  border="bottom",
+  fontColour = "black",
+  wrapText = FALSE
+)
+subtotal_rows_red <- createStyle(
+  fontSize = 11,
+  fgFill = "#FFF1F1",
+  border="bottom",
+  fontColour = "black",
+  wrapText = FALSE
+)
+cell_format <- createStyle(numFmt = "0;0;-")
 
 stringa <- " Report \n  "
 lines <- unlist(strsplit(stringa, "\n"))
@@ -174,6 +195,47 @@ insertImage(wb,sheet = "Report","File/corporate.status.png",startCol = 10, start
 # writeData(wb, sheet = "Report_Entities", x = "Entity by solvency", startCol = 1, startRow = 25)
 # writeDataTable(wb, 2, x = solvency.pf.entities , startRow = 26, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleMedium2")
 
+
+
+
+writeData(wb,2,'Report Agreement',1,1)
+addStyle(wb, sheet = "Report_Agreement", style = titolone, rows = 1, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+
+writeData(wb, sheet = "Report_Agreement", x = "Totals", startCol = 1, startRow = 3)
+addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 3, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = total.pdr , startRow = 4, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+addStyle(wb, sheet = "Report_Agreement", style = thousands_rows, rows = 5, cols = c(2:3) ,stack = TRUE,gridExpand = TRUE)
+
+writeData(wb, sheet = "Report_Agreement", x = "Agreement by status", startCol = 1, startRow = 8)
+addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 8, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = agreemeent.by.status , startRow = 9, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(10:13), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report_Agreement", style = total_rows, rows = 10, cols = c(1:3) ,stack = TRUE,gridExpand = TRUE)
+
+writeData(wb, sheet = "Report_Agreement", x = "Agreement by status and discount", startCol = 1, startRow = 16)
+addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 16, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = agreement.summary.discount , startRow = 17, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+addStyle(wb, sheet = "Report_Agreement", style = total_rows, rows = 18, cols = c(1:6) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report_Agreement", style = subtotal_rows_red, rows = 22, cols = c(1:6) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report_Agreement", style = subtotal_rows_green, rows = 30, cols = c(1:6) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report_Agreement", style = subtotal_rows_yellow, rows = 26, cols = c(1:6) ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report_Agreement", style = thousands_rows, rows = c(18:30), cols = c(4:6) ,stack = TRUE,gridExpand = TRUE)
+for(i in 1:nrow(agreement.summary.discount)){
+  for (j in 1:ncol(agreement.summary.discount)) {
+   if(agreement.summary.discount[[i,j]]==0){
+     addStyle(wb, sheet = "Report_Agreement", style = cell_format, rows = i+17, cols = j ,stack = TRUE,gridExpand = TRUE)
+   }
+  }
+}
+#addStyle(wb, sheet = "Report_Agreement", style = cell_format, rows = c(19:30), cols = c(4:6) ,stack = TRUE,gridExpand = TRUE)
+
+
+writeData(wb, sheet = "Report_Agreement", x = "Agreement by role", startCol = 1, startRow = 33)
+addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 33, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = agree.by.role , startRow = 34, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(35:36), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+
+insertImage(wb,sheet = "Report_Agreement","File/status.plot.png",startCol = 9, startRow = 10, width = 5, height = 5, dpi = 300)
 
 
 saveWorkbook(wb, file = "File/Teaser.xlsx", overwrite = TRUE)

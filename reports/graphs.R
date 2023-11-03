@@ -167,3 +167,23 @@ ggsave("File/province_plot.png",plot = province_plot)
 
 
 
+#----------------------------------------#
+#----  status and discount of agreement ------
+#----------------------------------------#
+status.discount <- agreement.summary.discount[c(5,9,13),]
+status.discount$status <- c('Failed','Active','Closed')
+bar_width <- 0.5
+status.plot <- ggplot(status.discount, aes(x = status)) +
+  geom_bar(aes(y = total.debt, fill = "total.debt"), stat = "identity",width = bar_width) +
+  geom_bar(aes(y = amount.agreed, fill = "amount.agreed"), stat = "identity", width = bar_width) +
+  geom_bar(aes(y = paid, fill = "paid"), stat = "identity",width = bar_width) +
+  scale_fill_manual(values = c("total.debt" = "#B7DFEF","paid" = "blue", "amount.agreed" = "#57c1ef")) +
+  geom_text(aes(label = sprintf("%.1fk", total.debt/1000),y = total.debt +1000 ), hjust = 0.4,size = 3) +
+  geom_text(aes(label = sprintf("%.1fk", amount.agreed/1000),y = amount.agreed+1000), hjust = 0.4,size = 3) +
+  geom_text(aes(label = sprintf("%.1fk", paid/1000),y = paid+1000), hjust = 0.4,size = 3) +
+  labs(title = "Agreement by Status ", x = "status", y = "amount(k)",fill = "Legend") +
+  scale_y_continuous(labels = scales::comma_format(scale = 1e-3, big.mark = ","))+
+  theme_minimal()
+
+status.plot
+ggsave("File/status.plot.png",plot = status.plot)
