@@ -23,7 +23,7 @@ agree <- agreement.summary %>% select(id.agreement,pagamento,gbv.agreement,date.
                         amount.agreement = sum(importo.singole.rate),
                         residual = amount.agreement - sum(pagamento), 
                         date.last.payment = max(date.last.payment,na.rm = TRUE),
-                        gbv.agreement = sum(gbv.agreement)) %>% 
+                        gbv.agreement = first(gbv.agreement)) %>% 
           distinct()
 agree$date.last.payment <- gsub('-Inf',NA,agree$date.last.payment) %>% as.Date()
 agreement.summary <- left_join(agree, agreement.summary %>% select(-date.last.payment,-pagamento,-importo.singole.rate,-gbv.agreement), by = "id.agreement")  %>% distinct()
