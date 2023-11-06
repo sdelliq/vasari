@@ -42,18 +42,18 @@ infoprov.PF$income.net <- ifelse(infoprov.PF$solvency.base=='pensionato', fct.pe
 
 infoprov.PF <- infoprov.PF %>%
   mutate(solvency.base = case_when(
-    str_detect(note, 'indeterminato') ~ 'Employee-Permanent',
-    str_detect(note, 'determinato') ~ 'Employee-Temporary',
-    str_detect(solvency.base,'pensionato') ~ 'Pensioner',
-    str_detect(solvency.base,'deceduto') ~ 'Deceased',
-    str_detect(solvency.base,'dipendente') ~ 'Employee-N/A',
-    str_detect(solvency.base,'disoccupato') ~ 'Insolvent'
+    str_detect(note, 'indeterminato') ~ 'employee-permanent',
+    str_detect(note, 'determinato') ~ 'employee-temporary',
+    str_detect(solvency.base,'pensionato') ~ 'pensioner',
+    str_detect(solvency.base,'deceduto') ~ 'deceased',
+    str_detect(solvency.base,'dipendente') ~ 'employee-N/A',
+    str_detect(solvency.base,'disoccupato') ~ 'insolvent'
   ))
 
 
-infoprov.PF <- infoprov.PF %>% mutate(solvency.adj = ifelse(solvency.base=='Pensioner' & income.net > 1200,'Pensioner',
-                                                            ifelse(str_detect(solvency.base,'Employee') & income.net > 500,solvency.base,'Insolvent')))
-infoprov.PF <- infoprov.PF %>% mutate(solvency.adj = case_when(solvency.adj == 'Insolvent' & p.iva_flag=='si'~'Self-Employed',
+infoprov.PF <- infoprov.PF %>% mutate(solvency.adj = ifelse(solvency.base=='pensioner' & income.net > 1200,'pensioner',
+                                                            ifelse(str_detect(solvency.base,'employee') & income.net > 500,solvency.base,'insolvent')))
+infoprov.PF <- infoprov.PF %>% mutate(solvency.adj = case_when(solvency.adj == 'insolvent' & p.iva_flag=='si'~'self-employed',
                                                                TRUE ~ solvency.adj))
 
 infoprov.PF <- infoprov.PF %>% select(cf.piva,date.infoprov,name,solvency.base,solvency.adj,income.gross,

@@ -32,8 +32,8 @@ Loans <- Loans %>% mutate_at(vars(gbv.original,gbv.residual,principal,interest,p
 Loans$status <- factor(Loans$status,levels = c('utp','bad'))
 
 Loans <- Loans %>% mutate(type= case_when(
-  str_detect(type, "scopertocc") ~ 'Bank Accounts',
-  str_detect(type, "mutuo") ~ 'Mortgages',
-  str_detect(type, "finanziamento") ~ 'Personal Loans'
+  str_detect(type, "scopertocc") ~ 'bank accounts',
+  str_detect(type, "mutuo") ~ 'mortgages',
+  str_detect(type, "finanziamento") ~ 'personal loans'
 ))
 Loans$type <- factor(Loans$type)

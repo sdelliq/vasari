@@ -168,12 +168,12 @@ update_type.pg_column <- function(data) {
 update_status.pg <- function(data){
   result <- data %>%
     mutate(status.pg = case_when(
-      str_detect(status.pg, "inattiva")  ~ "Inactive",
-      str_detect(status.pg, "attiva")  ~ "Active",
-      str_detect(status.pg, "fallita")  ~ "Bankruptcy", 
-      str_detect(status.pg, "cancellata")  ~ "Canceled",
-      str_detect(status.pg, "in scioglimento / liquidazione")  ~ "Liquidation",
-      str_detect(status.pg, "in procedura concorsuale")  ~ "Insolvency",
+      str_detect(status.pg, "inattiva")  ~ "inactive",
+      str_detect(status.pg, "attiva")  ~ "active",
+      str_detect(status.pg, "fallita")  ~ "bankruptcy", 
+      str_detect(status.pg, "cancellata")  ~ "canceled",
+      str_detect(status.pg, "in scioglimento / liquidazione")  ~ "liquidation",
+      str_detect(status.pg, "in procedura concorsuale")  ~ "insolvency",
       TRUE ~ NA_character_
     ))
 }
