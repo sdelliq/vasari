@@ -253,7 +253,7 @@ addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(48:49
 
 
 insertImage(wb,sheet = "Report_Agreement","File/status.plot.png",startCol = 9, startRow = 7, width = 5, height = 5, dpi = 300)
-insertImage(wb,sheet = "Report_Agreement","File/ninstallment.png",startCol = 9, startRow = 33, dpi = 300)
+insertImage(wb,sheet = "Report_Agreement","File/ninstallment.png",startCol = 9, startRow = 33, width = 4, height = 4, dpi = 300)
 
 
 saveWorkbook(wb, file = "File/Teaser.xlsx", overwrite = TRUE)
