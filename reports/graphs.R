@@ -181,9 +181,38 @@ status.plot <- ggplot(status.discount, aes(x = status)) +
   geom_text(aes(label = sprintf("%.1fk", total.debt/1000),y = total.debt +1000 ), hjust = 0.4,size = 3) +
   geom_text(aes(label = sprintf("%.1fk", amount.agreed/1000),y = amount.agreed+1000), hjust = 0.4,size = 3) +
   geom_text(aes(label = sprintf("%.1fk", paid/1000),y = paid+1000), hjust = 0.4,size = 3) +
-  labs(title = "Agreement by Status ", x = "status", y = "amount(k)",fill = "Legend") +
+  labs(subtitle = "Agreement by Status ", x = "status", y = "amount(k)",fill = "Legend") +
   scale_y_continuous(labels = scales::comma_format(scale = 1e-3, big.mark = ","))+
   theme_minimal()
 
 status.plot
 ggsave("File/status.plot.png",width = 4.5, height = 4.5,plot = status.plot)
+
+
+#----------------------------------------#
+#----  status and discount of agreement ------
+#----------------------------------------#
+general_mean <- mean(agreement.summary$n.installment)
+agreement.ninstallment_plot <- agreement.summary.ninstallment  %>% 
+  ggplot(aes(x = `range.amount` , y = `mean.installment`)) +
+  geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
+  geom_text(aes(label = `mean.installment`), hjust = 0.5, vjust= -0.5, size = 3) +
+  xlab("Range amount") +
+  theme_bw() +
+  theme(
+    axis.title.y = element_text(size = 8),
+    axis.title.x = element_text(size = 8),
+    panel.border = element_blank(),
+    panel.grid.minor.x = element_line(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.line = element_line(color = "black")
+  )+
+  geom_hline(yintercept =  general_mean, color="#69c1ef", linetype= 2) +
+  geom_text(aes(x=0.7, y=11.58, label="mean: 10.8"), size=3)+
+  labs(title = " ", subtitle= "Mean installments by amount")
+
+agreement.ninstallment_plot
+
+ggsave("File/ninstallment.png",width = 4, height = 4,plot = agreement.ninstallment_plot)

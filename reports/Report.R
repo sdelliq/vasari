@@ -237,12 +237,12 @@ addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(35:36
 
 
 
-writeData(wb, sheet = "Report_Agreement", x = "Agreement ", startCol = 1, startRow = 39)
+writeData(wb, sheet = "Report_Agreement", x = "Mean installments by amount", startCol = 1, startRow = 39)
 addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 39, cols = 1 ,stack = TRUE,gridExpand = TRUE)
 writeDataTable(wb, 2, x = agreement.summary.ninstallment , startRow = 40, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
 #addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(41:), cols = 3 ,stack = TRUE,gridExpand = TRUE)
 
-writeData(wb, sheet = "Report_Agreement", x = "Failed Agreement ", startCol = 1, startRow = 46)
+writeData(wb, sheet = "Report_Agreement", x = "Failed Agreements ", startCol = 1, startRow = 46)
 addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 46, cols = 1 ,stack = TRUE,gridExpand = TRUE)
 writeDataTable(wb, 2, x = failed , startRow = 47, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
 addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(48:49), cols = 4 ,stack = TRUE,gridExpand = TRUE)
@@ -252,7 +252,8 @@ addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(48:49
 
 
 
-insertImage(wb,sheet = "Report_Agreement","File/status.plot.png",startCol = 9, startRow = 10, width = 5, height = 5, dpi = 300)
+insertImage(wb,sheet = "Report_Agreement","File/status.plot.png",startCol = 9, startRow = 7, width = 5, height = 5, dpi = 300)
+insertImage(wb,sheet = "Report_Agreement","File/ninstallment.png",startCol = 9, startRow = 33, dpi = 300)
 
 
 saveWorkbook(wb, file = "File/Teaser.xlsx", overwrite = TRUE)
