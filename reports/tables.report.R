@@ -6,11 +6,11 @@ total.gbv <- sum(Loans$gbv.original)
 total.ndg <- n_distinct(Loans$id.bor)
 average.loan <- total.gbv/total.loans
 average.borr <- total.gbv/total.ndg
-totals <- data.frame(N.Loans = total.loans,
-                     Sum.GBV = total.gbv,
+totals <- data.frame(n.loans = total.loans,
+                     sum.gbv = total.gbv,
                      ndg = total.ndg,
-                     Average.Loan.Size = average.loan,
-                     Average.GBV.Borrower = average.borr)
+                     average.loan.size = average.loan,
+                     average.gbv.borrower = average.borr)
 
 #---------------------------------#
 #----     Loans by type     ------
@@ -23,7 +23,7 @@ loans.by.type <- Loans %>% group_by(type) %>%
             sum.gbv = sum(gbv.original),
             `%.gbv` = sum.gbv/total.gbv)
 total.row <- loans.by.type %>% 
-    summarise( type = 'Totals', 
+    summarise( type = 'totals', 
                across(c(n.loans,`%.loans`,sum.gbv,`%.gbv`),sum))
 loans.by.type <- rbind(total.row,loans.by.type)
 #---------------------------------#
@@ -50,7 +50,7 @@ loans.by.gbv.range <- loans.range %>%
 names(loans.by.gbv.range)<- c("range.gbv","ndg","sum.gbv","%.gbv")
 
 total.row <- loans.by.gbv.range %>% 
-  summarise( range.gbv = 'Totals', 
+  summarise( range.gbv = 'totals', 
              across(c(ndg,sum.gbv,`%.gbv`),sum))
 loans.by.gbv.range <- rbind(total.row,loans.by.gbv.range)
 
@@ -62,7 +62,7 @@ cutoff.date <- as.Date('2023-07-12')
 loans.vintage <- Loans %>% 
                mutate(vintage = round(as.numeric(cutoff.date - date.status)/365,0))
 
-quantile(loans.vintage$vintage, c(0.33,0.66))
+#quantile(loans.vintage$vintage, c(0.33,0.66))
 
 Range_vintage <- c(0,3,5,Inf)
 Range_vintage_labels <- c('0-3','4-5','5+')
@@ -73,15 +73,15 @@ loans.vintage <- loans.vintage %>%
   select(id.bor,gbv.original,range.gbv,range.vintage) %>% distinct() %>%
   group_by(range.vintage,range.gbv) %>% 
   summarize(n.loans = n(),sum_gbv = sum(gbv.original),perc = sum(gbv.original)/total.gbv )
-names(loans.vintage)<- c("Range.Vintage","Range.GBV",'N.Loans',"Sum.GBV"," % GBV")
+names(loans.vintage)<- c("range.vintage","range.gbv",'n.loans',"sum.gbv","%.gbv")
 
-subtotal.row <- loans.vintage %>% group_by(Range.Vintage) %>%
-  summarise( Range.Vintage = 'Subtotals',
-             Range.GBV = ' ',
-             across(c('N.Loans',"Sum.GBV"," % GBV"),sum))
-total.row <- subtotal.row %>% summarise( Range.Vintage = 'Totals',
-                                         Range.GBV = ' ',
-                                         across(c('N.Loans',"Sum.GBV"," % GBV"),sum))
+subtotal.row <- loans.vintage %>% group_by(range.vintage) %>%
+  summarise( range.vintage = 'subtotals',
+             range.gbv = ' ',
+             across(c('n.loans',"sum.gbv","%.gbv"),sum))
+total.row <- subtotal.row %>% summarise( range.vintage = 'totals',
+                                         range.gbv = ' ',
+                                         across(c('n.loans',"sum.gbv","%.gbv"),sum))
 loans.vintage <- rbind(subtotal.row,total.row,loans.vintage)
 loans.vintage <- loans.vintage[c(4,5:8,1,9:12,2,13:16,3),]
 
@@ -116,7 +116,7 @@ ent.by.type <- ent.by.type %>% group_by(type.subject) %>%
 names(ent.by.type)<- c("type.subject","ndg","sum.gbv","%.ndg","%.gbv")
 
 total.row <- ent.by.type %>% 
-  summarise( type.subject = 'Totals', 
+  summarise( type.subject = 'totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 ent.by.type <- rbind(total.row,ent.by.type)
 
@@ -141,7 +141,7 @@ names(ent.by.area)<- c("area","ndg","sum.gbv","%.ndg","%.gbv")
 
 
 total.row <- ent.by.area %>% 
-  summarise( area = 'Totals', 
+  summarise( area = 'totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 ent.by.area <- rbind(total.row,ent.by.area)
 
@@ -174,7 +174,7 @@ ent.by.province <- ent.by.province[6:21,] %>% summarise(
 Top_5_province_by_gbv <- rbind(Top_5_province_by_gbv, ent.by.province)
 names(Top_5_province_by_gbv) <- c("province", "ndg","sum.gbv","%.ndg","%.gbv")
 total.row <- Top_5_province_by_gbv %>% 
-  summarise( province = 'Totals', 
+  summarise( province = 'totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 Top_5_province_by_gbv <- rbind(total.row,Top_5_province_by_gbv)
 #----------------------------------------#
@@ -202,7 +202,7 @@ ent.by.solvency <- ent.by.solvency %>%
 names(ent.by.solvency) <- c("solvency.pf", "ndg","sum.gbv","%.ndg","%.gbv")
 
 total.row <- ent.by.solvency %>% 
-  summarise( solvency.pf = 'Totals', 
+  summarise( solvency.pf = 'totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 ent.by.solvency <- rbind(total.row,ent.by.solvency)
 
@@ -213,7 +213,7 @@ ent.by.solvency[is.na(ent.by.solvency)] <- "N/A *"
 #----------------------------------------#
 #----  counterparties by solvency  -----
 #----------------------------------------#
-solvency_order <- c("Pensioner", "Employee-Permanent","Employee-N/A","Employee-Temporary", "Real Estate","Self-Employed", "Insolvent","Deceased")
+solvency_order <- c("pensioner", "employee-permanent","employee-N/A","employee-temporary", "real estate","self-employed", "insolvent","deceased")
 solvency_order <- rev(solvency_order)
 counter.by.solvency <- entities.loans %>% select(id.counterparty,gbv.original,solvency.pf)%>% distinct() %>% 
   group_by(id.counterparty,gbv.original) %>% slice(1) %>% ungroup() %>%
@@ -222,14 +222,14 @@ counter.by.solvency <- entities.loans %>% select(id.counterparty,gbv.original,so
             gbv.original = sum(gbv.original))
 
 counter.by.solvency <- counter.by.solvency %>% mutate(solvency.pf = case_when(
-    solvency.pf == '1' ~ "Deceased",
-    solvency.pf == '2' ~ "Insolvent",
-    solvency.pf == '3' ~"Self-Employed",
-    solvency.pf == '4' ~"Real Estate",
-    solvency.pf == '5' ~"Employee-Temporary",
-    solvency.pf == '6' ~"Employee-N/A",
-    solvency.pf == '7' ~"Employee-Permanent",
-    solvency.pf == '8' ~"Pensioner",
+    solvency.pf == '1' ~ "deceased",
+    solvency.pf == '2' ~ "insolvent",
+    solvency.pf == '3' ~"self-employed",
+    solvency.pf == '4' ~"real state",
+    solvency.pf == '5' ~"employee-temporary",
+    solvency.pf == '6' ~"employee-N/A",
+    solvency.pf == '7' ~"employee-permanent",
+    solvency.pf == '8' ~"pensioner",
     TRUE ~ NA
 ))
 
@@ -287,7 +287,7 @@ corporate.type <- corporate.type %>%
 names(corporate.type) <- c("corporate type", "ndg","sum.gbv","%.ndg","%.gbv")
 
 total.row <- corporate.type %>% 
-  summarise( `corporate type` = 'Totals', 
+  summarise( `corporate type` = 'totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 corporate.type <- rbind(total.row,corporate.type)
 
@@ -328,7 +328,7 @@ corporate.status <- corporate.status %>%
 names(corporate.status) <- c("corporate status", "ndg","sum.gbv","%.ndg","%.gbv")
 
 total.row <- corporate.status %>% 
-  summarise( `corporate status` = 'Totals', 
+  summarise( `corporate status` = 'totals', 
              across(c(ndg,sum.gbv,`%.ndg`,`%.gbv`),sum))
 corporate.status <- rbind(total.row,corporate.status)
 
@@ -380,7 +380,7 @@ mat$area <- replace_na(mat$area,'N/A')
 mat[is.na(mat)] <- 0
 mat$Total <- rowSums(mat[2:7])
 total <-  mat %>% 
-  summarise( area = 'Totals', 
+  summarise( area = 'totals', 
              across(-area,sum))
 mat <- rbind(mat,total)
 
@@ -393,9 +393,9 @@ total.agreement <- n_distinct(agreement.summary$id.agreement)
 total.gbv.agreement <- sum(agreement.summary$gbv.agreement)
 total.amount.agreed <- sum(agreement.summary$amount.agreement)
 
-total.pdr <- data.frame(N.Agreement = total.agreement,
-                        Amount.agreed = total.amount.agreed,
-                        Due.GBV = total.gbv.agreement
+total.pdr <- data.frame(n.agreement = total.agreement,
+                        amount.agreed = total.amount.agreed,
+                        due.gbv = total.gbv.agreement
                         )
 #----------------------------------------------------#
 #----       agreement by status  ------
@@ -432,10 +432,10 @@ agreement.summary.discount <- agreement.summary.discount %>%
 agreement.summary.discount <- merge(reference_df, agreement.summary.discount, by = c("status", "discount"), all = TRUE)
 agreement.summary.discount[is.na(agreement.summary.discount)]<-0
 subtotal.row <- agreement.summary.discount %>% group_by(status) %>%
-  summarise( status = 'Subtotals',
+  summarise( status = 'subtotals',
              discount = ' ',
              across(c('n.agreement',"paid","amount.agreed","total.debt"),sum))
-total.row <- subtotal.row %>% summarise( status = 'Totals',
+total.row <- subtotal.row %>% summarise( status = 'totals',
                                          discount = ' ',
                                          across(c('n.agreement',"paid","amount.agreed","total.debt"),sum))
 agreement.summary.discount <- rbind(total.row,agreement.summary.discount,subtotal.row)
@@ -448,4 +448,31 @@ agree.by.role <- agreement.summary %>%
   left_join(counterparties %>% select(id.counterparty,role), by = 'id.counterparty') %>%
   group_by(role) %>% summarise(n.agreement = n_distinct(id.agreement),'%.agreement'= round(n.agreement/total.agreement,2))
 
+#----------------------------------------------------#
+#----       agreement by n.installment and gbv.range ------
+#----------------------------------------------------#
 
+quantile(agreement.summary$amount.agreement,c(0.33,0.66))
+
+# 3970 , 5188
+agreement.summary.ninstallment <- agreement.summary %>% select(id.agreement,amount.agreement,n.installment,status)
+Range_amount <- c(0,4000,5200,Inf)
+Range_amount_labels <- c('0-4k','4-5.2k','5.2k +')
+agreement.summary.ninstallment$range.amount <- cut(agreement.summary.ninstallment$amount.agreement, breaks = Range_amount, labels = Range_amount_labels, include.lowest = TRUE)
+
+agreement.summary.ninstallment <- agreement.summary.ninstallment %>%
+  group_by(range.amount) %>%
+  summarise(n.agreement = n_distinct(id.agreement),mean.installment = round(mean(n.installment),1))
+
+#----------------------------------------------------#
+#----       agreement failed when? ------
+#----------------------------------------------------#
+failed <- agreement.summary %>% filter(status == 'failed') %>%
+  left_join(agreement.proj,by = "id.agreement") %>% 
+  select(id.agreement,date.paid,n.installment,paid,amount.agreement) %>%
+  group_by(id.agreement) %>%
+  summarise( paid.installment = sum(paid != 0), rates = first(n.installment),
+             paid = sum(paid), due= first(amount.agreement))
+failed <- failed %>% mutate(status = ifelse(paid.installment==0,"never paid","failed in process"),
+                            "amount.paid.%" = round(paid/due,2)) %>%
+  select(status,paid.installment,rates,"amount.paid.%")
