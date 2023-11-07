@@ -8,10 +8,16 @@ showGridLines(wb, sheet = 2, showGridLines = FALSE)
 setColWidths(wb, sheet=1,cols = 1:7,widths = "auto")
 setColWidths(wb, sheet=2,cols = 1:7,widths = "auto")
 
-percentage_rows <- createStyle(numFmt = "0.0%",fontSize = 10,halign = "right",valign = "center",fontColour = "black",wrapText = FALSE)
+percentage_rows <- createStyle(
+  numFmt = "0.0%",
+  fontSize = 11,
+  halign = "right",
+  valign = "center",
+  fontColour = "black",
+  wrapText = FALSE)
 Milion_rows <- createStyle(
   numFmt = "0.0,,\"M\"",
-  fontSize = 10,
+  fontSize = 11,
   halign = "right",
   valign = "center",
   fontColour = "black",
@@ -19,7 +25,7 @@ Milion_rows <- createStyle(
 )
 thousands_rows <- createStyle(
   numFmt = "0.0,\"k\"",
-  fontSize = 10,
+  fontSize = 11,
   halign = "right",
   valign = "center",
   fontColour = "black",
@@ -45,10 +51,13 @@ total_rows <- createStyle(
   fontSize = 11,
   fgFill = "#B7DFEF",
   border="bottom",
+  borderStyle = "medium",
+  borderColour = "#283DBB",
   fontColour = "black",
   wrapText = FALSE
 )
 subtotal_rows <- createStyle(
+  textDecoration = "bold",
   fontSize = 11,
   fgFill = "#E4F0FE",
   border="bottom",
@@ -57,6 +66,7 @@ subtotal_rows <- createStyle(
 )
 
 subtotal_rows_yellow <- createStyle(
+  textDecoration = "bold",
   fontSize = 11,
   fgFill = "#FFFCF1",
   border="bottom",
@@ -64,6 +74,7 @@ subtotal_rows_yellow <- createStyle(
   wrapText = FALSE
 )
 subtotal_rows_green <- createStyle(
+  textDecoration = "bold",
   fontSize = 11,
   fgFill = "#EFFFE6",
   border="bottom",
@@ -71,6 +82,7 @@ subtotal_rows_green <- createStyle(
   wrapText = FALSE
 )
 subtotal_rows_red <- createStyle(
+  textDecoration = "bold",
   fontSize = 11,
   fgFill = "#FFF1F1",
   border="bottom",
@@ -230,22 +242,23 @@ for(i in 1:nrow(agreement.summary.discount)){
 #addStyle(wb, sheet = "Report_Agreement", style = cell_format, rows = c(19:30), cols = c(4:6) ,stack = TRUE,gridExpand = TRUE)
 
 
-writeData(wb, sheet = "Report_Agreement", x = "Agreement by role", startCol = 1, startRow = 33)
+writeData(wb, sheet = "Report_Agreement", x = "Agreement by role and status", startCol = 1, startRow = 33)
 addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 33, cols = 1 ,stack = TRUE,gridExpand = TRUE)
-writeDataTable(wb, 2, x = agree.by.role , startRow = 34, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
-addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(35:36), cols = 3 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = agree.by.role.status , startRow = 34, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(35:39), cols = 4 ,stack = TRUE,gridExpand = TRUE)
+addStyle(wb, sheet = "Report_Agreement", style = thousands_rows, rows = c(35:39), cols = 5 ,stack = TRUE,gridExpand = TRUE)
 
 
 
-writeData(wb, sheet = "Report_Agreement", x = "Mean installments by amount", startCol = 1, startRow = 39)
-addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 39, cols = 1 ,stack = TRUE,gridExpand = TRUE)
-writeDataTable(wb, 2, x = agreement.summary.ninstallment , startRow = 40, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+writeData(wb, sheet = "Report_Agreement", x = "Mean installments by amount", startCol = 1, startRow = 42)
+addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 42, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = agreement.summary.ninstallment , startRow = 43, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
 #addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(41:), cols = 3 ,stack = TRUE,gridExpand = TRUE)
 
-writeData(wb, sheet = "Report_Agreement", x = "Failed Agreements ", startCol = 1, startRow = 46)
-addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 46, cols = 1 ,stack = TRUE,gridExpand = TRUE)
-writeDataTable(wb, 2, x = failed , startRow = 47, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
-addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(48:49), cols = 4 ,stack = TRUE,gridExpand = TRUE)
+writeData(wb, sheet = "Report_Agreement", x = "Failed Agreements ", startCol = 1, startRow = 49)
+addStyle(wb, sheet = "Report_Agreement", style = title_rows, rows = 49, cols = 1 ,stack = TRUE,gridExpand = TRUE)
+writeDataTable(wb, 2, x = failed , startRow = 50, startCol = 1,  withFilter = FALSE, tableStyle =  "TableStyleLight9")
+addStyle(wb, sheet = "Report_Agreement", style = percentage_rows, rows = c(51:52), cols = 4 ,stack = TRUE,gridExpand = TRUE)
 
 
 
