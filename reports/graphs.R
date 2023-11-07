@@ -1,7 +1,7 @@
 add_grid_elements <- function(values, x_positions, width.rec, height.rec, ratio) {
   for (i in 1:length(values)) {
     grid.roundrect(width = width.rec, height = height.rec, name = "rr", x = x_positions[i], y = 0.94, r=unit(ratio, "snpc"), gp = gpar(col = "#1b8bbe"))
-    grid.text(values[i], x = x_positions[i], y = 0.94, gp = gpar(fontsize = 9))
+    grid.text(values[i], x = x_positions[i], y = 0.94, gp = gpar(fontsize = 13))
   }
 }
 
@@ -14,12 +14,14 @@ dev.new()
 loan.type.plot <- loans.by.type[2:4,]  %>% mutate(`type` = fct_reorder(type,`%.gbv`))%>%
   ggplot(aes(x =type , y = `%.gbv`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
-  geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100),group = `type`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 3) +
+  geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100),group = `type`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 5) +
   #geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.4, hjust = 0.4),size = 3) +
   xlab("Type Of Loan") +
   theme_bw() +
   scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
   theme(
+    axis.text = element_text(size = 11), 
+    axis.title = element_text(size = 12), 
     panel.border = element_blank(),
     panel.grid.minor.x = element_line(),
     panel.grid.major.y = element_line(),
@@ -47,12 +49,14 @@ dev.new()
 entity.type.plot <- ent.by.type[2:3,] %>% mutate(`type.subject` = fct_reorder(`type.subject`,`%.gbv`))%>%
   ggplot(aes(x =type.subject , y = `%.gbv`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
-  geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100),group = `type.subject`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 3) +
+  geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100),group = `type.subject`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 5) +
   #geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.4, hjust = 0.4),size = 3) +
   xlab("Type Of Entity") +
   theme_bw() +
 scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 10)) +
   theme(
+    axis.text = element_text(size = 12), 
+    axis.title = element_text(size = 13), 
     panel.border = element_blank(),
     panel.grid.minor.x = element_line(),
     panel.grid.major.y = element_line(),
@@ -64,7 +68,7 @@ labs(title = " ", subtitle= " ")
 
 png("File/entity.type.png", width = 500, height = 600,units = "px") 
 entity.type.plot
-grid.text("Sum GBV", x=0.15, y=0.94, gp=gpar(fontsize=9))
+grid.text("Sum GBV", x=0.15, y=0.94, gp=gpar(fontsize=11))
 values <- c("8.6 M", "17.0 M")
 n_values <- length(values)
 x_positions <- seq(0.34, 0.74, length.out = n_values)
@@ -78,12 +82,14 @@ dev.new()
 corporate.status.plot <- corporate.status[2:8,] %>% mutate(`corporate status` = fct_reorder(`corporate status`,`%.gbv`))%>%
   ggplot(aes(x =`corporate status` , y = `%.gbv`)) +
   geom_col(fill = "#57c1ef", alpha = 0.6, width = 0.4) +
-  geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100), group = `corporate status`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 3) +
+  geom_text(aes(label = sprintf("%.1f%%", `%.gbv`*100), group = `corporate status`, y = `%.gbv`/2 , vjust = 0.5,hjust = "center"),size = 4) +
   #geom_text(aes(label = sprintf("%.1fM", `sum.gbv` / 1e6),vjust = -0.7, hjust = 0.5),size = 3) +
   xlab("Corporate's Status") +
   theme_bw() +
   scale_y_continuous(labels = scales::percent_format(scale = 100,accuracy = 5)) +
   theme(
+    axis.text = element_text(size = 12), 
+    axis.title = element_text(size = 13), 
     panel.border = element_blank(),
     panel.grid.minor.x = element_line(),
     panel.grid.major.y = element_line(),
