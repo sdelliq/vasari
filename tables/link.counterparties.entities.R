@@ -1,6 +1,6 @@
-link.counterparties.entities <- counterparties %>% select (id.counterparty, id.bor)  
+link.counterparties.entities <- counterparties %>% select (id.counterparty, id.bor,name) %>% divide_column_by_character(., name, ",")
 link.counterparties.entities <- link.counterparties.entities %>% 
-  left_join(entities %>% select(id.bor, id.entity) %>% divide_column_by_character(., id.bor, ","), by= "id.bor", relationship = "many-to-many")  %>% select(-id.bor)
+  left_join(entities %>% select( id.entity,name), by= "name", relationship = "many-to-many")  %>% select(-id.bor,-name) %>% distinct()
 
 entities <- entities %>% select(-id.bor)
 
